@@ -1,0 +1,66 @@
+/* Andret Font Family */
+
+@font-face {
+  font-family: 'Andret';
+  src: url('/fonts/Andret-Light.otf') format('opentype');
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Andret';
+  src: url('/fonts/Andret-Regular.otf') format('opentype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Andret';
+  src: url('/fonts/Andret-RegularItalic.otf') format('opentype');
+  font-weight: 400;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Andret';
+  src: url('/fonts/Andret-Medium.otf') format('opentype');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Andret';
+  src: url('/fonts/Andret-Bold.otf') format('opentype');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Andret';
+  src: url('/fonts/Andret-Black.otf') format('opentype');
+  font-weight: 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Andret Mono';
+  src: url('/fonts/AndretMono-Regular.otf') format('opentype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Tomato Font - for logo/handwritten elements */
+@font-face {
+  font-family: 'Tomato';
+  src: url('/fonts/Tomato-Black.otf') format('opentype');
+  font-weight: 900;
+  font-style: normal;
+  font-display: swap;
+}

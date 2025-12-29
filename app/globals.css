@@ -1,0 +1,52 @@
+@import './fonts.css';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* {
+  box-sizing: border-box;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+  font-family: 'Andret', system-ui, sans-serif;
+}
+
+body {
+  position: relative;
+  background-color: #ffffff;
+  font-size: 14px;
+  line-height: 1.6;
+  color: #1a1a1a;
+  font-weight: 400;
+}
+
+main {
+  position: relative;
+  z-index: 1;
+}
+
+/* Smooth scrolling */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Custom text selection */
+::selection {
+  background-color: #5d7678;
+  color: white;
+}
+
+/* Remove default margins */
+h1, h2, h3, h4, h5, h6, p {
+  margin: 0;
+}
+
+/* Logo font */
+.logo-text {
+  font-family: 'Tomato', cursive;
+  font-weight: 900;
+}
