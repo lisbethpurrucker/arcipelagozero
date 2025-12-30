@@ -16,12 +16,12 @@ export default async function Stays() {
   return (
     <div>
       <PageHeader title={page?.title || 'Stays'} />
-      <div className="space-y-8">
+      <div className="space-y-4 sm:space-y-6 md:space-y-8">
         {page?.contentBlocks?.map((block) => (
           <ContentBlock key={block._key} block={block} />
         )) || (
-          <div className="bg-cream p-12 rounded-sm">
-            <p className="text-sm">Stays page content will appear here once configured in Sanity Studio.</p>
+          <div className="bg-cream p-6 sm:p-8 md:p-10 lg:p-12 rounded-sm">
+            <p className="text-xs sm:text-sm">Stays page content will appear here once configured in Sanity Studio.</p>
           </div>
         )}
       </div>

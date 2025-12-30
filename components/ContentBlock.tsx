@@ -18,9 +18,9 @@ export default function ContentBlock({ block }: ContentBlockProps) {
 
   if (block._type === 'textBlock') {
     return (
-      <div className={`p-10 rounded-sm ${bgClass}`}>
+      <div className={`p-4 sm:p-6 md:p-8 lg:p-10 rounded-sm ${bgClass}`}>
         <div className="prose max-w-none">
-          <p className="text-xs leading-relaxed whitespace-pre-wrap font-light">
+          <p className="text-[11px] sm:text-xs leading-relaxed whitespace-pre-wrap font-light">
             {block.text}
           </p>
         </div>
@@ -50,7 +50,7 @@ export default function ContentBlock({ block }: ContentBlockProps) {
 
   if (block._type === 'mixedBlock') {
     return (
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-2 sm:gap-3 md:gap-4">
         {block.image && (
           <div className={`aspect-[4/3] rounded-sm overflow-hidden ${bgClass}`}>
             <Image
@@ -63,8 +63,8 @@ export default function ContentBlock({ block }: ContentBlockProps) {
           </div>
         )}
         {block.text && (
-          <div className={`p-8 rounded-sm flex items-center ${bgClass}`}>
-            <p className="text-xs leading-relaxed whitespace-pre-wrap font-light">
+          <div className={`p-4 sm:p-6 md:p-8 rounded-sm flex items-center ${bgClass}`}>
+            <p className="text-[11px] sm:text-xs leading-relaxed whitespace-pre-wrap font-light">
               {block.text}
             </p>
           </div>

@@ -30,14 +30,14 @@ function MemberItem({
     <div className="border-b border-gray-200 last:border-b-0">
       <button
         onClick={onToggle}
-        className="w-full text-left py-5 hover:bg-gray-50/30 transition-colors"
+        className="w-full text-left py-3 sm:py-4 md:py-5 hover:bg-gray-50/30 transition-colors"
       >
-        <h3 className="text-base text-gray-600 font-normal">{member.name}</h3>
+        <h3 className="text-sm sm:text-base text-gray-600 font-normal">{member.name}</h3>
       </button>
-      
+
       {isOpen && hasDetails && (
         <div className="pb-0">
-          <div 
+          <div
             className="bg-cream rounded-none relative overflow-hidden"
             style={{
               backgroundImage: 'url(/images/pattern-lines.png)',
@@ -48,25 +48,25 @@ function MemberItem({
           >
             <div className={`grid grid-cols-1 ${member.photo ? 'md:grid-cols-2' : ''} gap-0 relative z-10`}>
               {/* Bio text */}
-              <div className="p-10 bg-cream/80">
+              <div className="p-4 sm:p-6 md:p-8 lg:p-10 bg-cream/80">
                 {member.bio && (
                   <>
-                    <p className="text-sm leading-relaxed text-gray-700 font-light mb-4 whitespace-pre-wrap">
+                    <p className="text-xs sm:text-sm leading-relaxed text-gray-700 font-light mb-3 sm:mb-4 whitespace-pre-wrap">
                       {member.bio}
                     </p>
                     <a
                       href="#"
-                      className="text-sm font-medium text-gray-700 underline hover:no-underline inline-block"
+                      className="text-xs sm:text-sm font-medium text-gray-700 underline hover:no-underline inline-block"
                     >
                       Call to action
                     </a>
                   </>
                 )}
               </div>
-              
+
               {/* Photo */}
               {member.photo && (
-                <div className="p-10 pl-0 bg-cream/80">
+                <div className="p-4 sm:p-6 md:p-8 lg:p-10 md:pl-0 bg-cream/80">
                   <div className="bg-teal-dark rounded-sm aspect-video flex items-center justify-center overflow-hidden">
                     {member.photo.asset ? (
                       <Image
@@ -77,7 +77,7 @@ function MemberItem({
                         className="w-full h-full object-cover"
                       />
                     ) : (
-                      <p className="text-white text-sm font-light">Personal Photo</p>
+                      <p className="text-white text-xs sm:text-sm font-light">Personal Photo</p>
                     )}
                   </div>
                 </div>
@@ -108,13 +108,13 @@ export default function MembersPage({
 
   return (
     <div>
-      <h1 className="text-5xl font-black mb-10 text-gray-900 tracking-tight">Members</h1>
-      
+      <h1 className="text-3xl sm:text-4xl md:text-5xl font-black mb-6 sm:mb-8 md:mb-10 text-gray-900 tracking-tight">Members</h1>
+
       <div className="bg-white">
         {Object.keys(categories).length > 0 ? (
           Object.entries(categories).map(([category, categoryMembers]) => (
-            <div key={category} className="mb-8 last:mb-0">
-              <h2 className="text-sm font-bold uppercase tracking-wider text-gray-500 mb-4 px-0">
+            <div key={category} className="mb-6 sm:mb-7 md:mb-8 last:mb-0">
+              <h2 className="text-xs sm:text-sm font-bold uppercase tracking-wider text-gray-500 mb-3 sm:mb-4 px-0">
                 {category}
               </h2>
               <div>
@@ -132,8 +132,8 @@ export default function MembersPage({
             </div>
           ))
         ) : (
-          <div className="p-8 text-center">
-            <p className="text-sm text-gray-500">
+          <div className="p-4 sm:p-6 md:p-8 text-center">
+            <p className="text-xs sm:text-sm text-gray-500">
               No members yet. Add some in Sanity Studio!
             </p>
           </div>

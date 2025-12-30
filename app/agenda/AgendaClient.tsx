@@ -32,8 +32,8 @@ function Carousel({ images }: { images: any[] }) {
 
   if (!images || images.length === 0) {
     return (
-      <div className="bg-teal-dark rounded-sm aspect-video flex items-center justify-center">
-        <p className="text-white text-sm font-light">Auto swiping photo carousel</p>
+      <div className="bg-teal-dark rounded-sm aspect-video flex items-center justify-center p-4">
+        <p className="text-white text-xs sm:text-sm font-light text-center">Auto swiping photo carousel</p>
       </div>
     )
   }
@@ -85,16 +85,16 @@ function AccordionItem({
     <div className="border-b border-gray-200 last:border-b-0">
       <button
         onClick={onToggle}
-        className="w-full text-left py-5 hover:bg-gray-50/30 transition-colors"
+        className="w-full text-left py-3 sm:py-4 md:py-5 hover:bg-gray-50/30 transition-colors"
       >
-        <h3 className="text-base text-gray-600 font-normal">{item.title}</h3>
+        <h3 className="text-sm sm:text-base text-gray-600 font-normal">{item.title}</h3>
       </button>
-      
+
       {isOpen && (
         <div className="pb-0">
           <div className="bg-cream rounded-none relative overflow-hidden">
             {/* PNG pattern background */}
-            <div 
+            <div
               className="absolute inset-0 opacity-30 pointer-events-none"
               style={{
                 backgroundImage: 'url(/images/pattern-lines.png)',
@@ -102,26 +102,26 @@ function AccordionItem({
                 backgroundSize: 'auto'
               }}
             />
-            
+
             <div className={`grid grid-cols-1 ${hasCarousel ? 'md:grid-cols-2' : ''} gap-0 relative z-10`}>
               {/* Text content */}
-              <div className="p-10">
-                <p className="text-sm leading-relaxed text-gray-700 font-light mb-6 whitespace-pre-wrap">
+              <div className="p-4 sm:p-6 md:p-8 lg:p-10">
+                <p className="text-xs sm:text-sm leading-relaxed text-gray-700 font-light mb-4 sm:mb-6 whitespace-pre-wrap">
                   {item.content}
                 </p>
                 {item.callToAction && (
                   <a
                     href={item.callToAction.url}
-                    className="text-sm font-medium text-gray-700 underline hover:no-underline inline-block"
+                    className="text-xs sm:text-sm font-medium text-gray-700 underline hover:no-underline inline-block"
                   >
                     {item.callToAction.text}
                   </a>
                 )}
               </div>
-              
+
               {/* Carousel */}
               {hasCarousel && (
-                <div className="p-10 pl-0">
+                <div className="p-4 sm:p-6 md:p-8 lg:p-10 md:pl-0">
                   <Carousel images={item.carouselImages!} />
                 </div>
               )}
@@ -144,8 +144,8 @@ export default function AgendaPage({
 
   return (
     <div>
-      <h1 className="text-5xl font-black mb-10 text-gray-900 tracking-tight">Agenda</h1>
-      
+      <h1 className="text-3xl sm:text-4xl md:text-5xl font-black mb-6 sm:mb-8 md:mb-10 text-gray-900 tracking-tight">Agenda</h1>
+
       <div className="bg-white">
         {newsItems.length > 0 ? (
           newsItems.map((item) => (
@@ -157,8 +157,8 @@ export default function AgendaPage({
             />
           ))
         ) : (
-          <div className="p-8 text-center">
-            <p className="text-sm text-gray-500">
+          <div className="p-4 sm:p-6 md:p-8 text-center">
+            <p className="text-xs sm:text-sm text-gray-500">
               No news items yet. Add some in Sanity Studio!
             </p>
           </div>
