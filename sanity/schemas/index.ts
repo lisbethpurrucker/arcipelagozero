@@ -4,7 +4,7 @@ import imageBlock from './imageBlock'
 import mixedBlock from './mixedBlock'
 import crmContact from './crmContact'
 import siteSettings from './siteSettings'
-import newsItem from './newsItem'
+import agendaItem from './agendaItem'
 import member from './member'
 
 export const schemaTypes = [
@@ -12,7 +12,7 @@ export const schemaTypes = [
   page,
   crmContact,
   siteSettings,
-  newsItem,
+  agendaItem,
   member,
 
   // Block types

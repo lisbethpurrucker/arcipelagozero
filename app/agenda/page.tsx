@@ -1,7 +1,7 @@
 import { sanityFetch } from '@/lib/sanity'
 import AgendaClient from './AgendaClient'
 
-interface NewsItem {
+interface AgendaItem {
   _id: string
   title: string
   content: string
@@ -17,35 +17,35 @@ interface NewsItem {
 }
 
 // Placeholder data
-const placeholderNews: NewsItem[] = [
+const placeholderAgenda: AgendaItem[] = [
   { 
     _id: '1', 
     title: 'News#1 Title', 
-    content: 'Content for news item 1. Add real content through Sanity Studio.',
+    content: 'Content for agenda item 1. Add real content through Sanity Studio.',
     order: 1 
   },
   { 
     _id: '2', 
     title: 'News#2 Title', 
-    content: 'Content for news item 2. Add real content through Sanity Studio.',
+    content: 'Content for agenda item 2. Add real content through Sanity Studio.',
     order: 2 
   },
   { 
     _id: '3', 
     title: 'News#3 Title', 
-    content: 'Content for news item 3. Add real content through Sanity Studio.',
+    content: 'Content for agenda item 3. Add real content through Sanity Studio.',
     order: 3 
   },
   { 
     _id: '4', 
     title: 'News#4 Title', 
-    content: 'Content for news item 4. Add real content through Sanity Studio.',
+    content: 'Content for agenda item 4. Add real content through Sanity Studio.',
     order: 4 
   },
   { 
     _id: '5', 
     title: 'News#5 Title', 
-    content: 'Content for news item 5. Add real content through Sanity Studio.',
+    content: 'Content for agenda item 5. Add real content through Sanity Studio.',
     order: 5 
   },
   {
@@ -60,7 +60,7 @@ const placeholderNews: NewsItem[] = [
   },
 ]
 
-const query = `*[_type == "newsItem"] | order(order asc) {
+const query = `*[_type == "agendaItem"] | order(order asc) {
   _id,
   title,
   content,
@@ -73,18 +73,18 @@ const query = `*[_type == "newsItem"] | order(order asc) {
 }`
 
 export default async function AgendaPage() {
-  let newsItems: NewsItem[] = placeholderNews
-  
+  let agendaItems: AgendaItem[] = placeholderAgenda
+
   try {
-    const sanityNews: any = await sanityFetch({ query, tags: ['newsItem'] })
+    const sanityAgenda: any = await sanityFetch({ query, tags: ['agendaItem'] })
     // Only use Sanity data if it's an array with items
-    if (Array.isArray(sanityNews) && sanityNews.length > 0) {
-      newsItems = sanityNews as NewsItem[]
+    if (Array.isArray(sanityAgenda) && sanityAgenda.length > 0) {
+      agendaItems = sanityAgenda as AgendaItem[]
     }
   } catch (error) {
     // Stay with placeholder data
     console.log('Using placeholder data')
   }
 
-  return <AgendaClient newsItems={newsItems} />
+  return <AgendaClient newsItems={agendaItems} />
 }

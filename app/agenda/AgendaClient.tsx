@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react'
 import Image from 'next/image'
 
-interface NewsItem {
+interface AgendaItem {
   _id: string
   title: string
   content: string
@@ -70,14 +70,14 @@ function Carousel({ images }: { images: any[] }) {
   )
 }
 
-function AccordionItem({ 
-  item, 
-  isOpen, 
-  onToggle 
-}: { 
-  item: NewsItem
+function AccordionItem({
+  item,
+  isOpen,
+  onToggle
+}: {
+  item: AgendaItem
   isOpen: boolean
-  onToggle: () => void 
+  onToggle: () => void
 }) {
   const hasCarousel = item.carouselImages && item.carouselImages.length > 0
 
@@ -131,10 +131,10 @@ function AccordionItem({
   )
 }
 
-export default function AgendaPage({ 
-  newsItems 
-}: { 
-  newsItems: NewsItem[] 
+export default function AgendaPage({
+  newsItems
+}: {
+  newsItems: AgendaItem[]
 }) {
   const [openItem, setOpenItem] = useState<string | null>(
     newsItems[newsItems.length - 1]?._id || null
@@ -157,7 +157,7 @@ export default function AgendaPage({
         ) : (
           <div className="p-4 sm:p-6 md:p-8 text-center">
             <p className="text-xs sm:text-sm text-gray-500">
-              No news items yet. Add some in Sanity Studio!
+              No agenda items yet. Add some in Sanity Studio!
             </p>
           </div>
         )}
