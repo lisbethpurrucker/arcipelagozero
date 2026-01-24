@@ -38,17 +38,17 @@ function MemberItem({
       {isOpen && hasDetails && (
         <div className="pb-0">
           <div
-            className="bg-cream rounded-none relative overflow-hidden"
+            className="rounded-none relative overflow-hidden"
             style={{
-              backgroundImage: 'url(/images/pattern-lines.png)',
-              backgroundRepeat: 'repeat',
-              backgroundSize: 'auto',
-              backgroundPosition: 'center'
+              backgroundImage: 'url(/images/pattern-lines-rotated.png)',
+              backgroundRepeat: 'no-repeat',
+              backgroundSize: 'cover',
+              backgroundPosition: 'top center'
             }}
           >
-            <div className={`grid grid-cols-1 ${member.photo ? 'md:grid-cols-2' : ''} gap-0 relative z-10`}>
+            <div className={`grid grid-cols-1 ${member.photo ? 'md:grid-cols-2' : ''} gap-0 relative`}>
               {/* Bio text */}
-              <div className="p-4 sm:p-6 md:p-8 lg:p-10 bg-cream/80">
+              <div className="p-4 sm:p-6 md:p-8 lg:p-10">
                 {member.bio && (
                   <>
                     <p className="text-xs sm:text-sm leading-relaxed text-gray-700 font-light mb-3 sm:mb-4 whitespace-pre-wrap">
@@ -66,7 +66,7 @@ function MemberItem({
 
               {/* Photo */}
               {member.photo && (
-                <div className="p-4 sm:p-6 md:p-8 lg:p-10 md:pl-0 bg-cream/80">
+                <div className="p-4 sm:p-6 md:p-8 lg:p-10 md:pl-0">
                   <div className="bg-teal-dark rounded-sm aspect-video flex items-center justify-center overflow-hidden">
                     {member.photo.asset ? (
                       <Image

@@ -92,18 +92,16 @@ function AccordionItem({
 
       {isOpen && (
         <div className="pb-0">
-          <div className="bg-cream rounded-none relative overflow-hidden">
-            {/* PNG pattern background */}
-            <div
-              className="absolute inset-0 opacity-30 pointer-events-none"
-              style={{
-                backgroundImage: 'url(/images/pattern-lines.png)',
-                backgroundRepeat: 'repeat',
-                backgroundSize: 'auto'
-              }}
-            />
-
-            <div className={`grid grid-cols-1 ${hasCarousel ? 'md:grid-cols-2' : ''} gap-0 relative z-10`}>
+          <div
+            className="rounded-none relative overflow-hidden"
+            style={{
+              backgroundImage: 'url(/images/pattern-lines-rotated.png)',
+              backgroundRepeat: 'no-repeat',
+              backgroundSize: 'cover',
+              backgroundPosition: 'top center'
+            }}
+          >
+            <div className={`grid grid-cols-1 ${hasCarousel ? 'md:grid-cols-2' : ''} gap-0 relative`}>
               {/* Text content */}
               <div className="p-4 sm:p-6 md:p-8 lg:p-10">
                 <p className="text-xs sm:text-sm leading-relaxed text-gray-700 font-light mb-4 sm:mb-6 whitespace-pre-wrap">
