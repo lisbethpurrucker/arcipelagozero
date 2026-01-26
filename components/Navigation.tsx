@@ -18,17 +18,17 @@ export default function Navigation() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
   return (
-    <nav className="fixed top-0 left-0 right-0 bg-white/95 backdrop-blur-sm border-b border-gray-100 z-50">
+    <nav className="fixed top-0 left-0 right-0 bg-white/95 backdrop-blur-sm z-50">
       <div className="max-w-7xl mx-auto px-4 py-4 sm:px-6 md:px-8 md:py-5">
         <div className="flex items-center justify-between">
           {/* Logo on the left */}
           <Link href="/" className="flex items-center gap-2 sm:gap-3 group" onClick={() => setMobileMenuOpen(false)}>
-            <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full border-2 border-gray-800 flex items-center justify-center">
-              <div className="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full bg-gray-800"></div>
+            <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full border-2 border-teal-dark flex items-center justify-center">
+              <div className="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full bg-teal-dark"></div>
             </div>
             <div className="flex flex-col leading-none">
-              <span className="font-handwritten text-base sm:text-lg text-gray-800">arcipelago</span>
-              <span className="font-handwritten text-base sm:text-lg text-gray-800">zero</span>
+              <span className="font-handwritten text-base sm:text-lg text-teal-dark">arcipelago</span>
+              <span className="font-handwritten text-base sm:text-lg text-teal-dark">zero</span>
             </div>
           </Link>
 
@@ -42,8 +42,8 @@ export default function Navigation() {
                   href={item.href}
                   className={`text-sm transition-all ${
                     isActive
-                      ? 'text-gray-900 font-black'
-                      : 'text-gray-500 hover:text-gray-900 hover:opacity-50'
+                      ? 'text-teal-dark font-black'
+                      : 'text-teal-dark/70 hover:text-teal-dark hover:opacity-50'
                   }`}
                 >
                   {item.label}
@@ -54,7 +54,7 @@ export default function Navigation() {
               href="https://instagram.com"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-gray-500 hover:text-gray-900 transition-colors"
+              className="text-teal-dark/70 hover:text-teal-dark transition-colors"
             >
               <Instagram size={20} strokeWidth={1.5} />
             </a>
@@ -63,7 +63,7 @@ export default function Navigation() {
           {/* Mobile hamburger button */}
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="md:hidden text-gray-800 p-2 hover:bg-gray-100 rounded-lg transition-colors"
+            className="md:hidden text-teal-dark p-2 hover:bg-gray-100 rounded-lg transition-colors"
             aria-label="Toggle menu"
           >
             {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
@@ -83,8 +83,8 @@ export default function Navigation() {
                     onClick={() => setMobileMenuOpen(false)}
                     className={`text-base py-2 px-2 rounded-lg transition-all ${
                       isActive
-                        ? 'text-gray-900 font-black bg-gray-50'
-                        : 'text-gray-500 hover:text-gray-900 hover:bg-gray-50'
+                        ? 'text-teal-dark font-black bg-gray-50'
+                        : 'text-teal-dark/70 hover:text-teal-dark hover:bg-gray-50'
                     }`}
                   >
                     {item.label}
@@ -95,7 +95,7 @@ export default function Navigation() {
                 href="https://instagram.com"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-gray-500 hover:text-gray-900 transition-colors py-2 px-2 flex items-center gap-2"
+                className="text-teal-dark/70 hover:text-teal-dark transition-colors py-2 px-2 flex items-center gap-2"
               >
                 <Instagram size={20} strokeWidth={1.5} />
                 <span className="text-base">Instagram</span>

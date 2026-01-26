@@ -18,6 +18,13 @@ interface AgendaItem {
   order: number
 }
 
+// Convert Sanity image reference to CDN URL
+function getSanityImageUrl(ref: string): string {
+  const [, id, dimensions, format] = ref.match(/image-([a-f0-9]+)-(\d+x\d+)-(\w+)/) || []
+  if (!id) return ''
+  return `https://cdn.sanity.io/images/jpgrzyq0/production/${id}-${dimensions}.${format}`
+}
+
 function Carousel({ images }: { images: any[] }) {
   const [currentIndex, setCurrentIndex] = useState(0)
 
@@ -48,7 +55,7 @@ function Carousel({ images }: { images: any[] }) {
           }`}
         >
           <Image
-            src={img.asset._ref}
+            src={getSanityImageUrl(img.asset._ref)}
             alt={img.alt || ''}
             fill
             className="object-cover"
@@ -83,15 +90,17 @@ function AccordionItem({
 
   return (
     <div className="border-b border-gray-200 last:border-b-0">
-      <button
-        onClick={onToggle}
-        className="w-full text-left py-3 sm:py-4 md:py-5 hover:bg-gray-50/30 transition-colors"
-      >
-        <h3 className="text-sm sm:text-base text-gray-600 font-normal">{item.title}</h3>
-      </button>
+      {!isOpen && (
+        <button
+          onClick={onToggle}
+          className="w-full text-left py-3 sm:py-4 md:py-5 hover:bg-gray-50/30 transition-colors"
+        >
+          <h3 className="text-sm sm:text-base text-teal-dark font-normal">{item.title}</h3>
+        </button>
+      )}
 
       {isOpen && (
-        <div className="pb-0">
+        <div className="pb-0 relative left-1/2 right-1/2 -ml-[50vw] -mr-[50vw] w-screen">
           <div
             className="rounded-none relative overflow-hidden"
             style={{
@@ -101,16 +110,26 @@ function AccordionItem({
               backgroundPosition: 'top center'
             }}
           >
-            <div className={`grid grid-cols-1 ${hasCarousel ? 'md:grid-cols-2' : ''} gap-0 relative`}>
+            {/* Title - centered and bold on top */}
+            <div className="pt-6 sm:pt-8 md:pt-10 max-w-5xl mx-auto px-4 sm:px-6 md:px-8 lg:px-12">
+              <button
+                onClick={onToggle}
+                className="w-full text-center mb-6 sm:mb-8"
+              >
+                <h3 className="text-lg sm:text-xl md:text-2xl text-teal-dark font-bold">{item.title}</h3>
+              </button>
+            </div>
+
+            <div className={`grid grid-cols-1 ${hasCarousel ? 'md:grid-cols-2' : ''} gap-0 relative max-w-5xl mx-auto`}>
               {/* Text content */}
-              <div className="p-4 sm:p-6 md:p-8 lg:p-10">
-                <p className="text-xs sm:text-sm leading-relaxed text-gray-700 font-light mb-4 sm:mb-6 whitespace-pre-wrap">
+              <div className="px-4 sm:px-6 md:px-8 lg:px-12 pb-4 sm:pb-6 md:pb-8 lg:pb-10">
+                <p className="text-sm sm:text-base md:text-lg leading-relaxed text-teal-dark font-light mb-4 sm:mb-6 whitespace-pre-wrap">
                   {item.content}
                 </p>
                 {item.callToAction && (
                   <a
                     href={item.callToAction.url}
-                    className="text-xs sm:text-sm font-medium text-gray-700 underline hover:no-underline inline-block"
+                    className="text-sm sm:text-base font-medium text-teal-dark underline hover:no-underline inline-block"
                   >
                     {item.callToAction.text}
                   </a>
@@ -119,7 +138,7 @@ function AccordionItem({
 
               {/* Carousel */}
               {hasCarousel && (
-                <div className="p-4 sm:p-6 md:p-8 lg:p-10 md:pl-0">
+                <div className="px-4 sm:px-6 md:px-8 lg:px-12 pb-4 sm:pb-6 md:pb-8 lg:pb-10 md:pl-0">
                   <Carousel images={item.carouselImages!} />
                 </div>
               )}
@@ -137,13 +156,11 @@ export default function AgendaPage({
   newsItems: AgendaItem[]
 }) {
   const [openItem, setOpenItem] = useState<string | null>(
-    newsItems[newsItems.length - 1]?._id || null
+    newsItems[0]?._id || null
   )
 
   return (
     <div>
-      <h1 className="text-3xl sm:text-4xl md:text-5xl font-black mb-6 sm:mb-8 md:mb-10 text-gray-900 tracking-tight">Agenda</h1>
-
       <div className="bg-white">
         {newsItems.length > 0 ? (
           newsItems.map((item) => (
@@ -156,7 +173,7 @@ export default function AgendaPage({
           ))
         ) : (
           <div className="p-4 sm:p-6 md:p-8 text-center">
-            <p className="text-xs sm:text-sm text-gray-500">
+            <p className="text-xs sm:text-sm text-teal-dark">
               No agenda items yet. Add some in Sanity Studio!
             </p>
           </div>

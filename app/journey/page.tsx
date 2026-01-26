@@ -1,6 +1,5 @@
 import { sanityFetch } from '@/lib/sanity'
 import { Page } from '@/lib/types'
-import PageHeader from '@/components/PageHeader'
 import ContentBlock from '@/components/ContentBlock'
 
 const query = `*[_type == "page" && slug.current == "journey"][0]{
@@ -15,7 +14,6 @@ export default async function Journey() {
 
   return (
     <div>
-      <PageHeader title={page?.title || 'Journey'} />
       <div className="space-y-4 sm:space-y-6 md:space-y-8">
         {page?.contentBlocks?.map((block) => (
           <ContentBlock key={block._key} block={block} />

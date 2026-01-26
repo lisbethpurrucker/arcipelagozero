@@ -22,6 +22,22 @@ export default defineType({
       validation: (Rule) => Rule.required(),
     }),
     defineField({
+      name: 'headerImage',
+      title: 'Header Image',
+      type: 'image',
+      description: 'Optional header/hero image displayed at the top of the page',
+      options: {
+        hotspot: true,
+      },
+      fields: [
+        {
+          name: 'alt',
+          type: 'string',
+          title: 'Alternative text',
+        },
+      ],
+    }),
+    defineField({
       name: 'contentBlocks',
       title: 'Content Blocks',
       type: 'array',

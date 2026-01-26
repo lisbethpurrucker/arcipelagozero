@@ -15,12 +15,7 @@ export default defineType({
       name: 'category',
       title: 'Category',
       type: 'string',
-      options: {
-        list: [
-          {title: 'Category A', value: 'CATEGORY A'},
-          {title: 'Category B', value: 'CATEGORY B'},
-        ],
-      },
+      description: 'Enter any category name (e.g., "Founders", "Artists", "Advisors")',
       validation: (Rule) => Rule.required(),
     }),
     defineField({

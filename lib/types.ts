@@ -19,6 +19,13 @@ export interface Page {
   slug: {
     current: string
   }
+  headerImage?: {
+    asset: {
+      _ref: string
+      _type: 'reference'
+    }
+    alt?: string
+  }
   contentBlocks?: ContentBlock[]
 }
 
