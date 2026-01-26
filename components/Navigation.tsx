@@ -63,7 +63,7 @@ export default function Navigation() {
           {/* Mobile hamburger button */}
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="md:hidden text-teal-dark p-2 hover:bg-gray-100 rounded-lg transition-colors"
+            className="md:hidden text-teal-dark p-2"
             aria-label="Toggle menu"
           >
             {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
@@ -81,10 +81,10 @@ export default function Navigation() {
                     key={item.href}
                     href={item.href}
                     onClick={() => setMobileMenuOpen(false)}
-                    className={`text-base py-2 px-2 rounded-lg transition-all ${
+                    className={`text-base py-2 px-2 transition-all hover:underline hover:underline-offset-4 active:underline active:underline-offset-4 ${
                       isActive
-                        ? 'text-teal-dark font-black bg-gray-50'
-                        : 'text-teal-dark/70 hover:text-teal-dark hover:bg-gray-50'
+                        ? 'text-teal-dark font-bold'
+                        : 'text-teal-dark/70 hover:text-teal-dark'
                     }`}
                   >
                     {item.label}
@@ -95,9 +95,10 @@ export default function Navigation() {
                 href="https://instagram.com"
                 target="_blank"
                 rel="noopener noreferrer"
+                onClick={() => setMobileMenuOpen(false)}
                 className="text-teal-dark/70 hover:text-teal-dark transition-colors py-2 px-2 flex items-center gap-2"
               >
-                <Instagram size={20} strokeWidth={1.5} />
+                <Instagram size={18} strokeWidth={1.5} />
                 <span className="text-base">Instagram</span>
               </a>
             </div>

@@ -35,17 +35,19 @@ function MemberItem({
 
   return (
     <div>
-      {/* Name button - always in the same place */}
-      <button
-        onClick={onToggle}
-        className="w-full text-center py-3 sm:py-4 md:py-5"
-      >
-        <h3 className={`text-sm sm:text-base text-teal-dark ${isOpen ? 'font-bold' : 'font-normal'}`}>
-          {member.name}
-        </h3>
-      </button>
+      {/* Closed state OR open without details - name only */}
+      {(!isOpen || (isOpen && !hasDetails)) && (
+        <button
+          onClick={onToggle}
+          className="w-full text-center py-3 sm:py-4 md:py-5"
+        >
+          <h3 className={`text-sm sm:text-base text-teal-dark ${isOpen ? 'font-bold' : 'font-normal'}`}>
+            {member.name}
+          </h3>
+        </button>
+      )}
 
-      {/* Expanded content */}
+      {/* Expanded state with details - full width with name inside */}
       {isOpen && hasDetails && (
         <div className="relative left-1/2 right-1/2 -ml-[50vw] -mr-[50vw] w-screen">
           <div
@@ -57,9 +59,21 @@ function MemberItem({
               backgroundPosition: 'top center'
             }}
           >
-            <div className={`grid grid-cols-1 ${member.photo ? 'md:grid-cols-2' : ''} gap-0 max-w-5xl mx-auto py-6 sm:py-8 md:py-10`}>
+            {/* Name inside expanded area */}
+            <div className="max-w-5xl mx-auto px-4 sm:px-6 md:px-8 lg:px-12">
+              <button
+                onClick={onToggle}
+                className="w-full text-center py-3 sm:py-4 md:py-5"
+              >
+                <h3 className="text-sm sm:text-base text-teal-dark font-bold">
+                  {member.name}
+                </h3>
+              </button>
+            </div>
+
+            <div className={`grid grid-cols-1 ${member.photo ? 'md:grid-cols-2' : ''} gap-0 max-w-5xl mx-auto pb-6 sm:pb-8 md:pb-10`}>
               {/* Bio text */}
-              <div className="px-4 sm:px-6 md:px-8 lg:px-12">
+              <div className={`px-4 sm:px-6 md:px-8 lg:px-12 ${member.photo ? 'mb-6 md:mb-0' : ''}`}>
                 {member.bio && (
                   <>
                     <p className="text-sm sm:text-base md:text-lg leading-relaxed text-teal-dark font-light mb-3 sm:mb-4 whitespace-pre-wrap">
