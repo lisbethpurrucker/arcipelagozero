@@ -28,7 +28,7 @@ export default async function Vision() {
     <div>
       {/* Header Image */}
       {page?.headerImage && (
-        <div className="relative left-1/2 right-1/2 -ml-[50vw] -mr-[50vw] w-screen mb-6 sm:mb-8 md:mb-10 aspect-[16/9] overflow-hidden">
+        <div className="relative left-1/2 right-1/2 -ml-[50vw] -mr-[50vw] w-screen mb-6 sm:mb-8 md:mb-10 h-[30vh] sm:h-[35vh] md:h-[40vh] overflow-hidden">
           <Image
             src={getSanityImageUrl(page.headerImage.asset._ref)}
             alt={page.headerImage.alt || page.title || 'Header image'}

@@ -29,20 +29,3 @@ export interface Page {
   contentBlocks?: ContentBlock[]
 }
 
-export interface CRMContact {
-  _id: string
-  _type: 'crmContact'
-  name: string
-  email: string
-  phone?: string
-  notes?: string
-  status: 'new' | 'contacted' | 'active' | 'archived'
-  dateAdded: string
-}
-
-export interface SiteSettings {
-  _id: string
-  _type: 'siteSettings'
-  title: string
-  description: string
-}

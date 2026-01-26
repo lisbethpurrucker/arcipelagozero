@@ -34,20 +34,22 @@ function MemberItem({
   const hasDetails = member.bio || member.photo
 
   return (
-    <div className="border-b border-gray-200 last:border-b-0">
-      {!isOpen && (
-        <button
-          onClick={onToggle}
-          className="w-full text-left py-3 sm:py-4 md:py-5 hover:bg-gray-50/30 transition-colors"
-        >
-          <h3 className="text-sm sm:text-base text-teal-dark font-normal">{member.name}</h3>
-        </button>
-      )}
+    <div>
+      {/* Name button - always in the same place */}
+      <button
+        onClick={onToggle}
+        className="w-full text-center py-3 sm:py-4 md:py-5"
+      >
+        <h3 className={`text-sm sm:text-base text-teal-dark ${isOpen ? 'font-bold' : 'font-normal'}`}>
+          {member.name}
+        </h3>
+      </button>
 
+      {/* Expanded content */}
       {isOpen && hasDetails && (
-        <div className="pb-0 relative left-1/2 right-1/2 -ml-[50vw] -mr-[50vw] w-screen">
+        <div className="relative left-1/2 right-1/2 -ml-[50vw] -mr-[50vw] w-screen">
           <div
-            className="rounded-none relative overflow-hidden"
+            className="relative overflow-hidden"
             style={{
               backgroundImage: 'url(/images/pattern-lines-rotated.png)',
               backgroundRepeat: 'no-repeat',
@@ -55,19 +57,9 @@ function MemberItem({
               backgroundPosition: 'top center'
             }}
           >
-            {/* Member name - centered and bold on top */}
-            <div className="pt-6 sm:pt-8 md:pt-10 max-w-5xl mx-auto px-4 sm:px-6 md:px-8 lg:px-12">
-              <button
-                onClick={onToggle}
-                className="w-full text-center mb-6 sm:mb-8"
-              >
-                <h3 className="text-lg sm:text-xl md:text-2xl text-teal-dark font-bold">{member.name}</h3>
-              </button>
-            </div>
-
-            <div className={`grid grid-cols-1 ${member.photo ? 'md:grid-cols-2' : ''} gap-0 relative max-w-5xl mx-auto`}>
+            <div className={`grid grid-cols-1 ${member.photo ? 'md:grid-cols-2' : ''} gap-0 max-w-5xl mx-auto py-6 sm:py-8 md:py-10`}>
               {/* Bio text */}
-              <div className="px-4 sm:px-6 md:px-8 lg:px-12 pb-4 sm:pb-6 md:pb-8 lg:pb-10">
+              <div className="px-4 sm:px-6 md:px-8 lg:px-12">
                 {member.bio && (
                   <>
                     <p className="text-sm sm:text-base md:text-lg leading-relaxed text-teal-dark font-light mb-3 sm:mb-4 whitespace-pre-wrap">
@@ -85,7 +77,7 @@ function MemberItem({
 
               {/* Photo */}
               {member.photo && (
-                <div className="px-4 sm:px-6 md:px-8 lg:px-12 pb-4 sm:pb-6 md:pb-8 lg:pb-10 md:pl-0">
+                <div className="px-4 sm:px-6 md:px-8 lg:px-12 md:pl-0">
                   <div className="bg-teal-dark rounded-sm aspect-video flex items-center justify-center overflow-hidden">
                     {member.photo.asset ? (
                       <Image
@@ -133,7 +125,7 @@ export default function MembersPage({
         {Object.keys(categories).length > 0 ? (
           Object.entries(categories).map(([category, categoryMembers]) => (
             <div key={category} className="mb-6 sm:mb-7 md:mb-8 last:mb-0">
-              <h2 className="text-xs sm:text-sm font-bold uppercase tracking-wider text-teal-dark mb-3 sm:mb-4 px-0">
+              <h2 className="text-xs sm:text-sm font-bold uppercase tracking-wider text-teal-dark mb-3 sm:mb-4 text-center">
                 {category}
               </h2>
               <div>

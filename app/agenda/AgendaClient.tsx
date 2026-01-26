@@ -89,20 +89,22 @@ function AccordionItem({
   const hasCarousel = item.carouselImages && item.carouselImages.length > 0
 
   return (
-    <div className="border-b border-gray-200 last:border-b-0">
-      {!isOpen && (
-        <button
-          onClick={onToggle}
-          className="w-full text-left py-3 sm:py-4 md:py-5 hover:bg-gray-50/30 transition-colors"
-        >
-          <h3 className="text-sm sm:text-base text-teal-dark font-normal">{item.title}</h3>
-        </button>
-      )}
+    <div>
+      {/* Title button - always in the same place */}
+      <button
+        onClick={onToggle}
+        className="w-full text-center py-3 sm:py-4 md:py-5"
+      >
+        <h3 className={`text-sm sm:text-base text-teal-dark ${isOpen ? 'font-bold' : 'font-normal'}`}>
+          {item.title}
+        </h3>
+      </button>
 
+      {/* Expanded content */}
       {isOpen && (
-        <div className="pb-0 relative left-1/2 right-1/2 -ml-[50vw] -mr-[50vw] w-screen">
+        <div className="relative left-1/2 right-1/2 -ml-[50vw] -mr-[50vw] w-screen">
           <div
-            className="rounded-none relative overflow-hidden"
+            className="relative overflow-hidden"
             style={{
               backgroundImage: 'url(/images/pattern-lines-rotated.png)',
               backgroundRepeat: 'no-repeat',
@@ -110,19 +112,9 @@ function AccordionItem({
               backgroundPosition: 'top center'
             }}
           >
-            {/* Title - centered and bold on top */}
-            <div className="pt-6 sm:pt-8 md:pt-10 max-w-5xl mx-auto px-4 sm:px-6 md:px-8 lg:px-12">
-              <button
-                onClick={onToggle}
-                className="w-full text-center mb-6 sm:mb-8"
-              >
-                <h3 className="text-lg sm:text-xl md:text-2xl text-teal-dark font-bold">{item.title}</h3>
-              </button>
-            </div>
-
-            <div className={`grid grid-cols-1 ${hasCarousel ? 'md:grid-cols-2' : ''} gap-0 relative max-w-5xl mx-auto`}>
+            <div className={`grid grid-cols-1 ${hasCarousel ? 'md:grid-cols-2' : ''} gap-0 max-w-5xl mx-auto py-6 sm:py-8 md:py-10`}>
               {/* Text content */}
-              <div className="px-4 sm:px-6 md:px-8 lg:px-12 pb-4 sm:pb-6 md:pb-8 lg:pb-10">
+              <div className="px-4 sm:px-6 md:px-8 lg:px-12">
                 <p className="text-sm sm:text-base md:text-lg leading-relaxed text-teal-dark font-light mb-4 sm:mb-6 whitespace-pre-wrap">
                   {item.content}
                 </p>
@@ -138,7 +130,7 @@ function AccordionItem({
 
               {/* Carousel */}
               {hasCarousel && (
-                <div className="px-4 sm:px-6 md:px-8 lg:px-12 pb-4 sm:pb-6 md:pb-8 lg:pb-10 md:pl-0">
+                <div className="px-4 sm:px-6 md:px-8 lg:px-12 md:pl-0">
                   <Carousel images={item.carouselImages!} />
                 </div>
               )}
