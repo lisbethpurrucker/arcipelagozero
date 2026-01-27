@@ -9,9 +9,9 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        'teal-dark': '#5d7678',
-        'cream': '#dadcbd',
-        'cream-light': '#e8e8d8',
+        'teal-dark': '#005769',
+        'mint': '#aed7c4',
+        'sand': '#d8c2a6',
       },
       fontFamily: {
         sans: ['Andret', 'system-ui', 'sans-serif'],

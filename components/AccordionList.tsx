@@ -1,9 +1,15 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import Image from 'next/image'
 
-interface AgendaItem {
+interface MediaItem {
+  _type: 'image' | 'file'
+  asset: { _ref: string }
+  alt?: string
+}
+
+export interface AccordionItem {
   _id: string
   title: string
   content: string
@@ -11,10 +17,7 @@ interface AgendaItem {
     text: string
     url: string
   }
-  carouselImages?: Array<{
-    asset: { _ref: string }
-    alt?: string
-  }>
+  carouselMedia?: MediaItem[]
   order: number
 }
 
@@ -25,19 +28,42 @@ function getSanityImageUrl(ref: string): string {
   return `https://cdn.sanity.io/images/jpgrzyq0/production/${id}-${dimensions}.${format}`
 }
 
-function Carousel({ images }: { images: any[] }) {
+// Convert Sanity file reference to CDN URL
+function getSanityFileUrl(ref: string): string {
+  const [, id, format] = ref.match(/file-([a-f0-9]+)-(\w+)/) || []
+  if (!id) return ''
+  return `https://cdn.sanity.io/files/jpgrzyq0/production/${id}.${format}`
+}
+
+// Check if media item is a video
+function isVideo(item: MediaItem): boolean {
+  return item._type === 'file' || item.asset._ref.startsWith('file-')
+}
+
+function MediaCarousel({ media }: { media: MediaItem[] }) {
   const [currentIndex, setCurrentIndex] = useState(0)
+  const videoRef = useRef<HTMLVideoElement>(null)
+  const currentItem = media[currentIndex]
+  const isCurrentVideo = isVideo(currentItem)
 
   useEffect(() => {
-    if (images && images.length > 1) {
+    // Only auto-advance for images, not videos
+    if (media && media.length > 1 && !isCurrentVideo) {
       const interval = setInterval(() => {
-        setCurrentIndex((prev) => (prev + 1) % images.length)
+        setCurrentIndex((prev) => (prev + 1) % media.length)
       }, 3000)
       return () => clearInterval(interval)
     }
-  }, [images])
+  }, [media, isCurrentVideo])
 
-  if (!images || images.length === 0) {
+  // Handle video end - advance to next slide
+  const handleVideoEnd = () => {
+    if (media.length > 1) {
+      setCurrentIndex((prev) => (prev + 1) % media.length)
+    }
+  }
+
+  if (!media || media.length === 0) {
     return (
       <div className="bg-teal-dark rounded-sm aspect-video flex items-center justify-center p-4">
         <p className="text-white text-xs sm:text-sm font-light text-center">Auto swiping photo carousel</p>
@@ -47,46 +73,63 @@ function Carousel({ images }: { images: any[] }) {
 
   return (
     <div className="relative bg-teal-dark rounded-sm aspect-video overflow-hidden">
-      {images.map((img, idx) => (
-        <div
-          key={idx}
-          className={`absolute inset-0 transition-opacity duration-500 ${
-            idx === currentIndex ? 'opacity-100' : 'opacity-0'
-          }`}
-        >
-          <Image
-            src={getSanityImageUrl(img.asset._ref)}
-            alt={img.alt || ''}
-            fill
-            className="object-cover"
-          />
-        </div>
-      ))}
-      <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-1.5">
-        {images.map((_, idx) => (
-          <button
+      {media.map((item, idx) => {
+        const isItemVideo = isVideo(item)
+        return (
+          <div
             key={idx}
-            onClick={() => setCurrentIndex(idx)}
-            className={`w-1.5 h-1.5 rounded-full transition-colors ${
-              idx === currentIndex ? 'bg-white' : 'bg-white/40'
+            className={`absolute inset-0 transition-opacity duration-500 ${
+              idx === currentIndex ? 'opacity-100' : 'opacity-0'
             }`}
-          />
-        ))}
-      </div>
+          >
+            {isItemVideo ? (
+              <video
+                ref={idx === currentIndex ? videoRef : null}
+                src={getSanityFileUrl(item.asset._ref)}
+                className="w-full h-full object-cover"
+                autoPlay={idx === currentIndex}
+                muted
+                playsInline
+                onEnded={handleVideoEnd}
+              />
+            ) : (
+              <Image
+                src={getSanityImageUrl(item.asset._ref)}
+                alt={item.alt || ''}
+                fill
+                className="object-cover"
+              />
+            )}
+          </div>
+        )
+      })}
+      {media.length > 1 && (
+        <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-1.5">
+          {media.map((_, idx) => (
+            <button
+              key={idx}
+              onClick={() => setCurrentIndex(idx)}
+              className={`w-1.5 h-1.5 rounded-full transition-colors ${
+                idx === currentIndex ? 'bg-white' : 'bg-white/40'
+              }`}
+            />
+          ))}
+        </div>
+      )}
     </div>
   )
 }
 
-function AccordionItem({
+function AccordionItemComponent({
   item,
   isOpen,
   onToggle
 }: {
-  item: AgendaItem
+  item: AccordionItem
   isOpen: boolean
   onToggle: () => void
 }) {
-  const hasCarousel = item.carouselImages && item.carouselImages.length > 0
+  const hasCarousel = item.carouselMedia && item.carouselMedia.length > 0
 
   return (
     <div>
@@ -145,7 +188,7 @@ function AccordionItem({
               {/* Carousel */}
               {hasCarousel && (
                 <div className="px-4 sm:px-6 md:px-8 lg:px-12 md:pl-0">
-                  <Carousel images={item.carouselImages!} />
+                  <MediaCarousel media={item.carouselMedia!} />
                 </div>
               )}
             </div>
@@ -156,21 +199,23 @@ function AccordionItem({
   )
 }
 
-export default function AgendaPage({
-  newsItems
+export default function AccordionList({
+  items,
+  emptyMessage = 'No items yet. Add some in Sanity Studio!'
 }: {
-  newsItems: AgendaItem[]
+  items: AccordionItem[]
+  emptyMessage?: string
 }) {
   const [openItem, setOpenItem] = useState<string | null>(
-    newsItems[0]?._id || null
+    items[0]?._id || null
   )
 
   return (
     <div>
       <div className="bg-white">
-        {newsItems.length > 0 ? (
-          newsItems.map((item) => (
-            <AccordionItem
+        {items.length > 0 ? (
+          items.map((item) => (
+            <AccordionItemComponent
               key={item._id}
               item={item}
               isOpen={openItem === item._id}
@@ -180,7 +225,7 @@ export default function AgendaPage({
         ) : (
           <div className="p-4 sm:p-6 md:p-8 text-center">
             <p className="text-xs sm:text-sm text-teal-dark">
-              No agenda items yet. Add some in Sanity Studio!
+              {emptyMessage}
             </p>
           </div>
         )}

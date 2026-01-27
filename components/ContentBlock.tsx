@@ -1,8 +1,9 @@
-import { ContentBlock as ContentBlockType } from '@/lib/types'
+'use client'
+
 import Image from 'next/image'
 
 interface ContentBlockProps {
-  block: ContentBlockType
+  block: any
 }
 
 // Convert Sanity image reference to CDN URL
@@ -12,17 +13,40 @@ function getSanityImageUrl(ref: string): string {
   return `https://cdn.sanity.io/images/jpgrzyq0/production/${id}-${dimensions}.${format}`
 }
 
-export default function ContentBlock({ block }: ContentBlockProps) {
-  const bgColorClasses = {
-    teal: 'bg-teal-dark text-white',
-    cream: 'bg-cream text-teal-dark',
-    white: 'bg-white text-teal-dark',
-  }
+// Convert Sanity file reference to CDN URL
+function getSanityFileUrl(ref: string): string {
+  const [, id, format] = ref.match(/file-([a-f0-9]+)-(\w+)/) || []
+  if (!id) return ''
+  return `https://cdn.sanity.io/files/jpgrzyq0/production/${id}.${format}`
+}
 
+// Extract YouTube/Vimeo video ID
+function getEmbedUrl(url: string): string | null {
+  // YouTube
+  const youtubeMatch = url.match(/(?:youtube\.com\/(?:watch\?v=|embed\/)|youtu\.be\/)([a-zA-Z0-9_-]+)/)
+  if (youtubeMatch) {
+    return `https://www.youtube.com/embed/${youtubeMatch[1]}`
+  }
+  // Vimeo
+  const vimeoMatch = url.match(/vimeo\.com\/(?:video\/)?(\d+)/)
+  if (vimeoMatch) {
+    return `https://player.vimeo.com/video/${vimeoMatch[1]}`
+  }
+  return null
+}
+
+const bgColorClasses: Record<string, string> = {
+  teal: 'bg-teal-dark text-white',
+  sand: 'bg-sand text-teal-dark',
+  white: 'bg-white text-teal-dark',
+}
+
+export default function ContentBlock({ block }: ContentBlockProps) {
   const bgClass = block.backgroundColor
-    ? bgColorClasses[block.backgroundColor]
+    ? bgColorClasses[block.backgroundColor] || 'bg-white text-teal-dark'
     : 'bg-white text-teal-dark'
 
+  // Text Block
   if (block._type === 'textBlock') {
     return (
       <div className={`p-4 sm:p-6 md:p-8 lg:p-10 ${bgClass}`}>
@@ -35,6 +59,7 @@ export default function ContentBlock({ block }: ContentBlockProps) {
     )
   }
 
+  // Image Block
   if (block._type === 'imageBlock') {
     return (
       <div className={`aspect-[4/3] overflow-hidden ${bgClass}`}>
@@ -55,6 +80,102 @@ export default function ContentBlock({ block }: ContentBlockProps) {
     )
   }
 
+  // Video Block
+  if (block._type === 'videoBlock') {
+    return (
+      <div className={bgClass}>
+        <div className="aspect-video overflow-hidden">
+          {block.video?.asset?._ref ? (
+            <video
+              src={getSanityFileUrl(block.video.asset._ref)}
+              className="w-full h-full object-cover"
+              controls
+              autoPlay={block.autoplay}
+              muted={block.autoplay}
+              loop={block.loop}
+              playsInline
+            />
+          ) : (
+            <div className="w-full h-full flex items-center justify-center bg-teal-dark">
+              <span className="text-white text-xs opacity-40 font-light">Video placeholder</span>
+            </div>
+          )}
+        </div>
+        {block.caption && (
+          <p className="text-xs sm:text-sm mt-2 opacity-70 text-center">{block.caption}</p>
+        )}
+      </div>
+    )
+  }
+
+  // Gallery Block
+  if (block._type === 'galleryBlock') {
+    const columns = block.columns || 3
+    const gapClasses: Record<string, string> = {
+      none: 'gap-0',
+      small: 'gap-1 sm:gap-2',
+      medium: 'gap-2 sm:gap-3 md:gap-4',
+      large: 'gap-3 sm:gap-4 md:gap-6',
+    }
+    const gap = gapClasses[block.gap] || gapClasses.medium
+    const colClasses: Record<number, string> = {
+      2: 'grid-cols-2',
+      3: 'grid-cols-2 md:grid-cols-3',
+      4: 'grid-cols-2 md:grid-cols-4',
+    }
+
+    return (
+      <div className={`grid ${colClasses[columns] || colClasses[3]} ${gap}`}>
+        {block.images?.map((img: any, idx: number) => (
+          <div key={idx} className="aspect-square overflow-hidden">
+            <Image
+              src={getSanityImageUrl(img.asset._ref)}
+              alt={img.alt || ''}
+              width={400}
+              height={400}
+              className="w-full h-full object-cover"
+            />
+          </div>
+        ))}
+      </div>
+    )
+  }
+
+  // Embed Block (YouTube/Vimeo)
+  if (block._type === 'embedBlock') {
+    const embedUrl = block.url ? getEmbedUrl(block.url) : null
+    const aspectClasses: Record<string, string> = {
+      '16/9': 'aspect-video',
+      '4/3': 'aspect-[4/3]',
+      '1/1': 'aspect-square',
+      '9/16': 'aspect-[9/16] max-w-sm mx-auto',
+    }
+    const aspect = aspectClasses[block.aspectRatio] || aspectClasses['16/9']
+
+    return (
+      <div>
+        <div className={`${aspect} overflow-hidden bg-teal-dark`}>
+          {embedUrl ? (
+            <iframe
+              src={embedUrl}
+              className="w-full h-full"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowFullScreen
+            />
+          ) : (
+            <div className="w-full h-full flex items-center justify-center">
+              <span className="text-white text-xs opacity-40 font-light">Invalid video URL</span>
+            </div>
+          )}
+        </div>
+        {block.caption && (
+          <p className="text-xs sm:text-sm mt-2 opacity-70 text-center text-teal-dark">{block.caption}</p>
+        )}
+      </div>
+    )
+  }
+
+  // Mixed Block
   if (block._type === 'mixedBlock') {
     return (
       <div className="grid grid-cols-1 md:grid-cols-2 gap-2 sm:gap-3 md:gap-4">
@@ -75,6 +196,90 @@ export default function ContentBlock({ block }: ContentBlockProps) {
               {block.text}
             </p>
           </div>
+        )}
+      </div>
+    )
+  }
+
+  // Quote Block
+  if (block._type === 'quoteBlock') {
+    return (
+      <div className={`p-6 sm:p-8 md:p-10 lg:p-12 ${bgClass}`}>
+        <blockquote className="text-center">
+          <p className="text-lg sm:text-xl md:text-2xl lg:text-3xl leading-relaxed font-light italic mb-4 sm:mb-6">
+            "{block.quote}"
+          </p>
+          {(block.author || block.role) && (
+            <footer className="text-sm sm:text-base">
+              {block.author && <span className="font-medium">{block.author}</span>}
+              {block.author && block.role && <span className="opacity-70"> — </span>}
+              {block.role && <span className="opacity-70">{block.role}</span>}
+            </footer>
+          )}
+        </blockquote>
+      </div>
+    )
+  }
+
+  // CTA Block
+  if (block._type === 'ctaBlock') {
+    const alignClasses: Record<string, string> = {
+      left: 'text-left',
+      center: 'text-center',
+      right: 'text-right',
+    }
+    const align = alignClasses[block.alignment] || alignClasses.center
+
+    const buttonStyles: Record<string, string> = {
+      filled: 'bg-teal-dark text-white hover:bg-teal-dark/90 px-6 py-3',
+      outline: 'border-2 border-teal-dark text-teal-dark hover:bg-teal-dark hover:text-white px-6 py-3',
+      link: 'text-teal-dark underline hover:no-underline',
+    }
+    const buttonClass = buttonStyles[block.style] || buttonStyles.filled
+
+    return (
+      <div className={`p-6 sm:p-8 md:p-10 ${bgClass} ${align}`}>
+        {block.heading && (
+          <h3 className="text-lg sm:text-xl md:text-2xl font-bold mb-2 sm:mb-3 text-teal-dark">
+            {block.heading}
+          </h3>
+        )}
+        {block.text && (
+          <p className="text-sm sm:text-base md:text-lg leading-relaxed font-light mb-4 sm:mb-6 max-w-2xl mx-auto">
+            {block.text}
+          </p>
+        )}
+        <a
+          href={block.buttonUrl}
+          className={`inline-block transition-all ${buttonClass}`}
+        >
+          {block.buttonText}
+        </a>
+      </div>
+    )
+  }
+
+  // Spacer Block
+  if (block._type === 'spacerBlock') {
+    const sizeClasses: Record<string, string> = {
+      small: 'h-4',
+      medium: 'h-8',
+      large: 'h-16',
+      xlarge: 'h-24',
+    }
+    const size = sizeClasses[block.size] || sizeClasses.medium
+
+    const dividerColors: Record<string, string> = {
+      teal: 'border-teal-dark',
+      sand: 'border-sand',
+      gray: 'border-gray-200',
+    }
+    const dividerColor = dividerColors[block.dividerColor] || dividerColors.gray
+
+    return (
+      <div className={`${size} flex items-center`}>
+        {block.showDivider && (
+          <div className={`w-full border-t ${dividerColor}`} />
         )}
       </div>
     )

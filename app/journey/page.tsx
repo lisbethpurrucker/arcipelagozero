@@ -1,30 +1,81 @@
 import { sanityFetch } from '@/lib/sanity'
-import { Page } from '@/lib/types'
-import ContentBlock from '@/components/ContentBlock'
+import AccordionList, { AccordionItem } from '@/components/AccordionList'
 
-const query = `*[_type == "page" && slug.current == "journey"][0]{
+// Placeholder data
+const placeholderJourney: AccordionItem[] = [
+  {
+    _id: '1',
+    title: 'Journey#1 Title',
+    content: 'Content for journey item 1. Add real content through Sanity Studio.',
+    order: 1
+  },
+  {
+    _id: '2',
+    title: 'Journey#2 Title',
+    content: 'Content for journey item 2. Add real content through Sanity Studio.',
+    order: 2
+  },
+  {
+    _id: '3',
+    title: 'Journey#3 Title',
+    content: 'Content for journey item 3. Add real content through Sanity Studio.',
+    order: 3
+  },
+  {
+    _id: '4',
+    title: 'Journey#4 Title',
+    content: 'Content for journey item 4. Add real content through Sanity Studio.',
+    order: 4
+  },
+  {
+    _id: '5',
+    title: 'Journey#5 Title',
+    content: 'Content for journey item 5. Add real content through Sanity Studio.',
+    order: 5
+  },
+  {
+    _id: '6',
+    title: 'Journey#6 Title',
+    content: 'Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat. Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie consequat, vel illum dolore eu feugiat nulla facilisis at vero eros et accumsan et iusto odio.',
+    callToAction: {
+      text: 'Call to action',
+      url: '#'
+    },
+    order: 6,
+  },
+]
+
+const query = `*[_type == "journeyItem"] | order(order asc) {
   _id,
   title,
-  slug,
-  contentBlocks[]
+  content,
+  callToAction,
+  carouselMedia[]{
+    _type,
+    asset,
+    alt
+  },
+  order
 }`
 
-export default async function Journey() {
-  const page: Page | null = await sanityFetch({ query, tags: ['page'] })
+export default async function JourneyPage() {
+  let journeyItems: AccordionItem[] = placeholderJourney
+
+  try {
+    const sanityJourney: any = await sanityFetch({ query, tags: ['journeyItem'] })
+    // Only use Sanity data if it's an array with items
+    if (Array.isArray(sanityJourney) && sanityJourney.length > 0) {
+      journeyItems = sanityJourney as AccordionItem[]
+    }
+  } catch (error) {
+    // Stay with placeholder data
+    console.log('Using placeholder data')
+  }
 
   return (
-    <div>
-      <div className="space-y-4 sm:space-y-6 md:space-y-8">
-        {page?.contentBlocks?.map((block) => (
-          <ContentBlock key={block._key} block={block} />
-        )) || (
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 sm:gap-4 md:gap-6">
-            <div className="bg-teal-dark aspect-square rounded-sm"></div>
-            <div className="bg-cream aspect-square rounded-sm"></div>
-            <div className="bg-white border border-gray-200 aspect-square rounded-sm"></div>
-          </div>
-        )}
-      </div>
-    </div>
+    <AccordionList
+      items={journeyItems}
+      emptyMessage="No journey items yet. Add some in Sanity Studio!"
+    />
   )
 }

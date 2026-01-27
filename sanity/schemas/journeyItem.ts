@@ -1,8 +1,8 @@
 import {defineField, defineType} from 'sanity'
 
 export default defineType({
-  name: 'agendaItem',
-  title: 'Agenda Item',
+  name: 'journeyItem',
+  title: 'Journey Item',
   type: 'document',
   fields: [
     defineField({
@@ -75,7 +75,7 @@ export default defineType({
       name: 'order',
       title: 'Order',
       type: 'number',
-      description: 'Order in which this item appears on the Agenda page',
+      description: 'Order in which this item appears on the Journey page',
       validation: (Rule) => Rule.required().min(0),
     }),
     defineField({
@@ -107,7 +107,7 @@ export default defineType({
       return {
         title: title,
         subtitle: `Order: ${order} • ${new Date(date).toLocaleDateString()}`,
-        media: () => '📰',
+        media: () => '✈️',
       }
     },
   },

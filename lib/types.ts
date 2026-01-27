@@ -2,7 +2,7 @@ export interface ContentBlock {
   _key: string
   _type: 'textBlock' | 'imageBlock' | 'mixedBlock'
   text?: string
-  backgroundColor?: 'teal' | 'cream' | 'white'
+  backgroundColor?: 'teal' | 'sand' | 'white'
   image?: {
     asset: {
       _ref: string

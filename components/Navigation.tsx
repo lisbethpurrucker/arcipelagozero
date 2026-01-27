@@ -1,11 +1,17 @@
 'use client'
 
 import Link from 'next/link'
+import Image from 'next/image'
 import { usePathname } from 'next/navigation'
 import { Instagram, Menu, X } from 'lucide-react'
 import { useState } from 'react'
 
-const navItems = [
+interface NavItem {
+  label: string
+  href: string
+}
+
+const defaultNavItems: NavItem[] = [
   { label: 'Vision', href: '/vision' },
   { label: 'Agenda', href: '/agenda' },
   { label: 'Stays', href: '/stays' },
@@ -13,7 +19,14 @@ const navItems = [
   { label: 'Members', href: '/members' },
 ]
 
-export default function Navigation() {
+interface NavigationProps {
+  navItems?: NavItem[]
+  instagramUrl?: string
+  showInstagram?: boolean
+}
+
+export default function Navigation({ navItems, instagramUrl = 'https://instagram.com', showInstagram = true }: NavigationProps) {
+  const items = navItems && navItems.length > 0 ? navItems : defaultNavItems
   const pathname = usePathname()
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
@@ -22,19 +35,20 @@ export default function Navigation() {
       <div className="max-w-7xl mx-auto px-4 py-4 sm:px-6 md:px-8 md:py-5">
         <div className="flex items-center justify-between">
           {/* Logo on the left */}
-          <Link href="/" className="flex items-center gap-2 sm:gap-3 group" onClick={() => setMobileMenuOpen(false)}>
-            <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full border-2 border-teal-dark flex items-center justify-center">
-              <div className="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full bg-teal-dark"></div>
-            </div>
-            <div className="flex flex-col leading-none">
-              <span className="font-handwritten text-base sm:text-lg text-teal-dark">arcipelago</span>
-              <span className="font-handwritten text-base sm:text-lg text-teal-dark">zero</span>
-            </div>
+          <Link href="/" className="block" onClick={() => setMobileMenuOpen(false)}>
+            <Image
+              src="/images/logo/logo.svg"
+              alt="Arcipelago Zero"
+              width={200}
+              height={50}
+              className="h-8 sm:h-10 md:h-12 w-auto"
+              priority
+            />
           </Link>
 
           {/* Desktop Navigation links on the right */}
           <div className="hidden md:flex items-center gap-6 lg:gap-8">
-            {navItems.map((item) => {
+            {items.map((item) => {
               const isActive = pathname === item.href
               return (
                 <Link
@@ -50,14 +64,16 @@ export default function Navigation() {
                 </Link>
               )
             })}
-            <a
-              href="https://instagram.com"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-teal-dark/70 hover:text-teal-dark transition-colors"
-            >
-              <Instagram size={20} strokeWidth={1.5} />
-            </a>
+            {showInstagram && (
+              <a
+                href={instagramUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-teal-dark/70 hover:text-teal-dark transition-colors"
+              >
+                <Instagram size={20} strokeWidth={1.5} />
+              </a>
+            )}
           </div>
 
           {/* Mobile hamburger button */}
@@ -74,7 +90,7 @@ export default function Navigation() {
         {mobileMenuOpen && (
           <div className="md:hidden mt-4 pt-4 border-t border-gray-100">
             <div className="flex flex-col space-y-3">
-              {navItems.map((item) => {
+              {items.map((item) => {
                 const isActive = pathname === item.href
                 return (
                   <Link
@@ -91,16 +107,18 @@ export default function Navigation() {
                   </Link>
                 )
               })}
-              <a
-                href="https://instagram.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                onClick={() => setMobileMenuOpen(false)}
-                className="text-teal-dark/70 hover:text-teal-dark transition-colors py-2 px-2 flex items-center gap-2"
-              >
-                <Instagram size={18} strokeWidth={1.5} />
-                <span className="text-base">Instagram</span>
-              </a>
+              {showInstagram && (
+                <a
+                  href={instagramUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="text-teal-dark/70 hover:text-teal-dark transition-colors py-2 px-2 flex items-center gap-2"
+                >
+                  <Instagram size={18} strokeWidth={1.5} />
+                  <span className="text-base">Instagram</span>
+                </a>
+              )}
             </div>
           </div>
         )}

@@ -44,7 +44,7 @@ export default async function Vision() {
         {page?.contentBlocks?.map((block) => (
           <ContentBlock key={block._key} block={block} />
         )) || (
-          <div className="bg-cream p-6 sm:p-8 md:p-10 lg:p-12 rounded-sm">
+          <div className="bg-sand p-6 sm:p-8 md:p-10 lg:p-12 rounded-sm">
             <p className="text-xs sm:text-sm">Vision page content will appear here once configured in Sanity Studio.</p>
           </div>
         )}

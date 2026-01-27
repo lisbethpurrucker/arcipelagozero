@@ -19,7 +19,7 @@ export default defineType({
         list: [
           {title: 'White', value: 'white'},
           {title: 'Teal', value: 'teal'},
-          {title: 'Cream', value: 'cream'},
+          {title: 'Sand', value: 'sand'},
         ],
       },
       initialValue: 'white',

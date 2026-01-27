@@ -48,7 +48,7 @@ export default async function Home() {
           {/* Color blocks row */}
           <div className="grid grid-cols-2 gap-0 mb-6 sm:mb-8 md:mb-10">
             <div className="bg-teal-dark aspect-square"></div>
-            <div className="bg-cream aspect-square"></div>
+            <div className="bg-sand aspect-square"></div>
           </div>
 
           {/* Another text section */}
@@ -59,9 +59,9 @@ export default async function Home() {
             </p>
           </div>
 
-          {/* Text + cream block */}
+          {/* Text + sand block */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 mb-6 sm:mb-8 md:mb-10">
-            <div className="bg-cream aspect-video"></div>
+            <div className="bg-sand aspect-video"></div>
             <div className="space-y-3 sm:space-y-4">
               <h3 className="text-xs sm:text-sm font-bold uppercase tracking-wider text-teal-dark">TITLE</h3>
               <p className="text-sm sm:text-base leading-relaxed text-teal-dark font-light">
@@ -72,8 +72,8 @@ export default async function Home() {
 
           {/* Three color blocks */}
           <div className="grid grid-cols-3 gap-0 mb-6 sm:mb-8 md:mb-10">
-            <div className="bg-cream aspect-[3/4]"></div>
-            <div className="bg-cream aspect-[3/4]"></div>
+            <div className="bg-sand aspect-[3/4]"></div>
+            <div className="bg-sand aspect-[3/4]"></div>
             <div className="bg-teal-dark aspect-[3/4]"></div>
           </div>
 
@@ -85,8 +85,8 @@ export default async function Home() {
             </p>
           </div>
 
-          {/* Large cream block */}
-          <div className="bg-cream aspect-[2/1] mb-6 sm:mb-8 md:mb-10"></div>
+          {/* Large sand block */}
+          <div className="bg-sand aspect-[2/1] mb-6 sm:mb-8 md:mb-10"></div>
 
           {/* Final text section */}
           <div className="mb-6 sm:mb-8 md:mb-10">
