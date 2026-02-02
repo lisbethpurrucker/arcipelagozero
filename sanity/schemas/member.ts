@@ -21,9 +21,30 @@ export default defineType({
     defineField({
       name: 'bio',
       title: 'Biography',
-      type: 'text',
-      rows: 8,
+      type: 'array',
       description: 'Optional biography text that appears when expanded',
+      of: [
+        {
+          type: 'block',
+          styles: [{title: 'Normal', value: 'normal'}],
+          marks: {
+            decorators: [
+              {title: 'Bold', value: 'strong'},
+              {title: 'Italic', value: 'em'},
+            ],
+            annotations: [
+              {
+                name: 'link',
+                type: 'object',
+                title: 'Link',
+                fields: [
+                  {name: 'href', type: 'url', title: 'URL', validation: (Rule: any) => Rule.uri({allowRelative: true})},
+                ],
+              },
+            ],
+          },
+        },
+      ],
     }),
     defineField({
       name: 'photo',
@@ -36,7 +57,8 @@ export default defineType({
         {
           name: 'alt',
           type: 'string',
-          title: 'Alternative text',
+          title: 'Photo description',
+          description: 'Describe who is in the photo. This helps visually impaired visitors. E.g. "Portrait of Maria Rossi"',
         },
       ],
     }),
@@ -69,7 +91,7 @@ export default defineType({
       return {
         title: title,
         subtitle: `${category} • Order: ${order}`,
-        media: media || (() => '👤'),
+        media,
       }
     },
   },

@@ -14,9 +14,30 @@ export default defineType({
     defineField({
       name: 'text',
       title: 'Description',
-      type: 'text',
-      rows: 3,
+      type: 'array',
       description: 'Optional description text',
+      of: [
+        {
+          type: 'block',
+          styles: [{title: 'Normal', value: 'normal'}],
+          marks: {
+            decorators: [
+              {title: 'Bold', value: 'strong'},
+              {title: 'Italic', value: 'em'},
+            ],
+            annotations: [
+              {
+                name: 'link',
+                type: 'object',
+                title: 'Link',
+                fields: [
+                  {name: 'href', type: 'url', title: 'URL', validation: (Rule: any) => Rule.uri({allowRelative: true})},
+                ],
+              },
+            ],
+          },
+        },
+      ],
     }),
     defineField({
       name: 'buttonText',
@@ -56,19 +77,6 @@ export default defineType({
       },
       initialValue: 'center',
     }),
-    defineField({
-      name: 'backgroundColor',
-      title: 'Background Color',
-      type: 'string',
-      options: {
-        list: [
-          {title: 'White', value: 'white'},
-          {title: 'Teal', value: 'teal'},
-          {title: 'Sand', value: 'sand'},
-        ],
-      },
-      initialValue: 'white',
-    }),
   ],
   preview: {
     select: {
@@ -79,7 +87,6 @@ export default defineType({
       return {
         title: 'CTA Block',
         subtitle: heading || buttonText || 'No text',
-        media: () => '👆',
       }
     },
   },

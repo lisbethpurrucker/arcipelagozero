@@ -2,12 +2,31 @@
 
 import { useState } from 'react'
 import Image from 'next/image'
+import { PortableText, PortableTextComponents } from '@portabletext/react'
+
+const portableTextComponents: PortableTextComponents = {
+  block: {
+    normal: ({ children }) => <p className="mb-4 last:mb-0">{children}</p>,
+  },
+  marks: {
+    link: ({ children, value }) => (
+      <a
+        href={value?.href}
+        className="text-teal-dark underline hover:no-underline"
+        target={value?.href?.startsWith('http') ? '_blank' : undefined}
+        rel={value?.href?.startsWith('http') ? 'noopener noreferrer' : undefined}
+      >
+        {children}
+      </a>
+    ),
+  },
+}
 
 interface Member {
   _id: string
   name: string
   category: string
-  bio?: string
+  bio?: any
   photo?: {
     asset: { _ref: string }
     alt?: string
@@ -76,9 +95,12 @@ function MemberItem({
               <div className={`px-4 sm:px-6 md:px-8 lg:px-12 ${member.photo ? 'mb-6 md:mb-0' : ''}`}>
                 {member.bio && (
                   <>
-                    <p className="text-sm sm:text-base md:text-lg leading-relaxed text-teal-dark font-light mb-3 sm:mb-4 whitespace-pre-wrap">
-                      {member.bio}
-                    </p>
+                    <div className="text-sm sm:text-base md:text-lg leading-relaxed text-teal-dark font-light mb-3 sm:mb-4">
+                      {Array.isArray(member.bio)
+                        ? <PortableText value={member.bio} components={portableTextComponents} />
+                        : <p className="whitespace-pre-wrap">{member.bio}</p>
+                      }
+                    </div>
                     <a
                       href="#"
                       className="text-sm sm:text-base font-medium text-teal-dark underline hover:no-underline inline-block"

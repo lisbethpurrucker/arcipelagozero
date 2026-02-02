@@ -34,19 +34,6 @@ export default defineType({
       description: 'Video will loop continuously',
       initialValue: false,
     }),
-    defineField({
-      name: 'backgroundColor',
-      title: 'Background Color',
-      type: 'string',
-      options: {
-        list: [
-          {title: 'White', value: 'white'},
-          {title: 'Teal', value: 'teal'},
-          {title: 'Sand', value: 'sand'},
-        ],
-      },
-      initialValue: 'white',
-    }),
   ],
   preview: {
     select: {
@@ -56,7 +43,6 @@ export default defineType({
       return {
         title: 'Video Block',
         subtitle: caption || 'No caption',
-        media: () => '🎬',
       }
     },
   },

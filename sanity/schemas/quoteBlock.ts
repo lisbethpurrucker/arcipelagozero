@@ -8,9 +8,30 @@ export default defineType({
     defineField({
       name: 'quote',
       title: 'Quote',
-      type: 'text',
-      rows: 4,
+      type: 'array',
       validation: (Rule) => Rule.required(),
+      of: [
+        {
+          type: 'block',
+          styles: [{title: 'Normal', value: 'normal'}],
+          marks: {
+            decorators: [
+              {title: 'Bold', value: 'strong'},
+              {title: 'Italic', value: 'em'},
+            ],
+            annotations: [
+              {
+                name: 'link',
+                type: 'object',
+                title: 'Link',
+                fields: [
+                  {name: 'href', type: 'url', title: 'URL', validation: (Rule: any) => Rule.uri({allowRelative: true})},
+                ],
+              },
+            ],
+          },
+        },
+      ],
     }),
     defineField({
       name: 'author',
@@ -24,19 +45,6 @@ export default defineType({
       type: 'string',
       description: 'Optional role or title of the author',
     }),
-    defineField({
-      name: 'backgroundColor',
-      title: 'Background Color',
-      type: 'string',
-      options: {
-        list: [
-          {title: 'White', value: 'white'},
-          {title: 'Teal', value: 'teal'},
-          {title: 'Sand', value: 'sand'},
-        ],
-      },
-      initialValue: 'sand',
-    }),
   ],
   preview: {
     select: {
@@ -44,10 +52,12 @@ export default defineType({
       author: 'author',
     },
     prepare({quote, author}) {
+      const plainQuote = quote
+        ?.map((block: any) => block.children?.map((child: any) => child.text).join('')).join(' ') || ''
+      const preview = plainQuote ? `"${plainQuote.substring(0, 40)}${plainQuote.length > 40 ? '...' : ''}"` : 'Empty quote'
       return {
         title: 'Quote Block',
-        subtitle: `"${quote?.substring(0, 40)}${quote?.length > 40 ? '...' : ''}" ${author ? `— ${author}` : ''}`,
-        media: () => '💬',
+        subtitle: `${preview} ${author ? `— ${author}` : ''}`.trim(),
       }
     },
   },

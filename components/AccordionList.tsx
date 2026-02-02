@@ -2,6 +2,25 @@
 
 import { useState, useEffect, useRef } from 'react'
 import Image from 'next/image'
+import { PortableText, PortableTextComponents } from '@portabletext/react'
+
+const portableTextComponents: PortableTextComponents = {
+  block: {
+    normal: ({ children }) => <p className="mb-4 last:mb-0">{children}</p>,
+  },
+  marks: {
+    link: ({ children, value }) => (
+      <a
+        href={value?.href}
+        className="text-teal-dark underline hover:no-underline"
+        target={value?.href?.startsWith('http') ? '_blank' : undefined}
+        rel={value?.href?.startsWith('http') ? 'noopener noreferrer' : undefined}
+      >
+        {children}
+      </a>
+    ),
+  },
+}
 
 interface MediaItem {
   _type: 'image' | 'file'
@@ -12,7 +31,7 @@ interface MediaItem {
 export interface AccordionItem {
   _id: string
   title: string
-  content: string
+  content: any
   callToAction?: {
     text: string
     url: string
@@ -86,7 +105,7 @@ function MediaCarousel({ media }: { media: MediaItem[] }) {
               <video
                 ref={idx === currentIndex ? videoRef : null}
                 src={getSanityFileUrl(item.asset._ref)}
-                className="w-full h-full object-cover"
+                className="w-full h-full object-contain"
                 autoPlay={idx === currentIndex}
                 muted
                 playsInline
@@ -97,7 +116,7 @@ function MediaCarousel({ media }: { media: MediaItem[] }) {
                 src={getSanityImageUrl(item.asset._ref)}
                 alt={item.alt || ''}
                 fill
-                className="object-cover"
+                className="object-contain"
               />
             )}
           </div>
@@ -172,9 +191,12 @@ function AccordionItemComponent({
             <div className={`grid grid-cols-1 ${hasCarousel ? 'md:grid-cols-2' : ''} gap-0 max-w-5xl mx-auto pb-6 sm:pb-8 md:pb-10`}>
               {/* Text content */}
               <div className={`px-4 sm:px-6 md:px-8 lg:px-12 ${hasCarousel ? 'mb-6 md:mb-0' : ''}`}>
-                <p className="text-sm sm:text-base md:text-lg leading-relaxed text-teal-dark font-light mb-4 sm:mb-6 whitespace-pre-wrap">
-                  {item.content}
-                </p>
+                <div className="text-sm sm:text-base md:text-lg leading-relaxed text-teal-dark font-light mb-4 sm:mb-6">
+                  {Array.isArray(item.content)
+                    ? <PortableText value={item.content} components={portableTextComponents} />
+                    : <p className="whitespace-pre-wrap">{item.content}</p>
+                  }
+                </div>
                 {item.callToAction && (
                   <a
                     href={item.callToAction.url}

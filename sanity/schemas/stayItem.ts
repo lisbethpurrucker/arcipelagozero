@@ -14,9 +14,30 @@ export default defineType({
     defineField({
       name: 'content',
       title: 'Content',
-      type: 'text',
-      rows: 8,
+      type: 'array',
       validation: (Rule) => Rule.required(),
+      of: [
+        {
+          type: 'block',
+          styles: [{title: 'Normal', value: 'normal'}],
+          marks: {
+            decorators: [
+              {title: 'Bold', value: 'strong'},
+              {title: 'Italic', value: 'em'},
+            ],
+            annotations: [
+              {
+                name: 'link',
+                type: 'object',
+                title: 'Link',
+                fields: [
+                  {name: 'href', type: 'url', title: 'URL', validation: (Rule: any) => Rule.uri({allowRelative: true})},
+                ],
+              },
+            ],
+          },
+        },
+      ],
     }),
     defineField({
       name: 'callToAction',
@@ -51,7 +72,8 @@ export default defineType({
             {
               name: 'alt',
               type: 'string',
-              title: 'Alternative text',
+              title: 'Description',
+              description: 'Briefly describe this image or video. This helps visually impaired visitors and improves search rankings.',
             },
           ],
         },
@@ -65,7 +87,8 @@ export default defineType({
             {
               name: 'alt',
               type: 'string',
-              title: 'Alternative text',
+              title: 'Description',
+              description: 'Briefly describe this image or video. This helps visually impaired visitors and improves search rankings.',
             },
           ],
         },
@@ -107,7 +130,6 @@ export default defineType({
       return {
         title: title,
         subtitle: `Order: ${order} • ${new Date(date).toLocaleDateString()}`,
-        media: () => '🏠',
       }
     },
   },

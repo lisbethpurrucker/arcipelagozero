@@ -1,6 +1,25 @@
 'use client'
 
 import Image from 'next/image'
+import { PortableText, PortableTextComponents } from '@portabletext/react'
+
+const portableTextComponents: PortableTextComponents = {
+  block: {
+    normal: ({ children }) => <p className="mb-4 last:mb-0">{children}</p>,
+  },
+  marks: {
+    link: ({ children, value }) => (
+      <a
+        href={value?.href}
+        className="text-teal-dark underline hover:no-underline"
+        target={value?.href?.startsWith('http') ? '_blank' : undefined}
+        rel={value?.href?.startsWith('http') ? 'noopener noreferrer' : undefined}
+      >
+        {children}
+      </a>
+    ),
+  },
+}
 
 interface ContentBlockProps {
   block: any
@@ -35,26 +54,28 @@ function getEmbedUrl(url: string): string | null {
   return null
 }
 
-const bgColorClasses: Record<string, string> = {
-  teal: 'bg-teal-dark text-white',
-  sand: 'bg-sand text-teal-dark',
-  white: 'bg-white text-teal-dark',
-}
-
 export default function ContentBlock({ block }: ContentBlockProps) {
-  const bgClass = block.backgroundColor
-    ? bgColorClasses[block.backgroundColor] || 'bg-white text-teal-dark'
-    : 'bg-white text-teal-dark'
-
   // Text Block
   if (block._type === 'textBlock') {
+    const isHero = block.variant === 'hero'
     return (
-      <div className={`p-4 sm:p-6 md:p-8 lg:p-10 ${bgClass}`}>
-        <div className="prose max-w-none">
-          <p className="text-sm sm:text-base md:text-lg leading-relaxed whitespace-pre-wrap font-light">
-            {block.text}
-          </p>
+      <div className="p-4 sm:p-6 md:p-8 lg:p-10 bg-white text-teal-dark">
+        {block.title && (
+          <h3 className="text-xs sm:text-sm font-bold uppercase tracking-wider text-teal-dark mb-3 sm:mb-4">
+            {block.title}
+          </h3>
+        )}
+        <div className={`prose max-w-none leading-relaxed ${isHero ? 'text-lg sm:text-xl md:text-2xl font-medium' : 'text-sm sm:text-base md:text-lg font-light'}`}>
+          {block.text && <PortableText value={block.text} components={portableTextComponents} />}
         </div>
+        {block.callToAction?.text && (
+          <a
+            href={block.callToAction.url || '#'}
+            className="text-sm sm:text-base font-medium text-teal-dark underline hover:no-underline inline-block mt-4"
+          >
+            {block.callToAction.text}
+          </a>
+        )}
       </div>
     )
   }
@@ -62,7 +83,7 @@ export default function ContentBlock({ block }: ContentBlockProps) {
   // Image Block
   if (block._type === 'imageBlock') {
     return (
-      <div className={`aspect-[4/3] overflow-hidden ${bgClass}`}>
+      <div className="aspect-[4/3] overflow-hidden bg-white text-teal-dark">
         {block.image ? (
           <Image
             src={getSanityImageUrl(block.image.asset._ref)}
@@ -83,7 +104,7 @@ export default function ContentBlock({ block }: ContentBlockProps) {
   // Video Block
   if (block._type === 'videoBlock') {
     return (
-      <div className={bgClass}>
+      <div className="bg-white text-teal-dark">
         <div className="aspect-video overflow-hidden">
           {block.video?.asset?._ref ? (
             <video
@@ -125,18 +146,20 @@ export default function ContentBlock({ block }: ContentBlockProps) {
     }
 
     return (
-      <div className={`grid ${colClasses[columns] || colClasses[3]} ${gap}`}>
-        {block.images?.map((img: any, idx: number) => (
-          <div key={idx} className="aspect-square overflow-hidden">
-            <Image
-              src={getSanityImageUrl(img.asset._ref)}
-              alt={img.alt || ''}
-              width={400}
-              height={400}
-              className="w-full h-full object-cover"
-            />
-          </div>
-        ))}
+      <div className="flex justify-center">
+        <div className={`grid ${colClasses[columns] || colClasses[3]} ${gap} w-full max-w-5xl`}>
+          {block.images?.map((img: any, idx: number) => (
+            <div key={idx} className="aspect-square overflow-hidden">
+              <Image
+                src={getSanityImageUrl(img.asset._ref)}
+                alt={img.alt || ''}
+                width={400}
+                height={400}
+                className="w-full h-full object-cover"
+              />
+            </div>
+          ))}
+        </div>
       </div>
     )
   }
@@ -177,26 +200,48 @@ export default function ContentBlock({ block }: ContentBlockProps) {
 
   // Mixed Block
   if (block._type === 'mixedBlock') {
+    const imageLeft = block.imagePosition === 'left'
+
+    const imageEl = block.image && (
+      <div className="aspect-[4/3] overflow-hidden bg-white text-teal-dark">
+        <Image
+          src={getSanityImageUrl(block.image.asset._ref)}
+          alt={block.image.alt || ''}
+          width={400}
+          height={300}
+          className="w-full h-full object-cover"
+        />
+      </div>
+    )
+
+    const textEl = (
+      <div className="p-4 sm:p-6 md:p-8 flex items-start bg-white text-teal-dark">
+        <div>
+          {block.title && (
+            <h3 className="text-xs sm:text-sm font-bold uppercase tracking-wider text-teal-dark mb-3 sm:mb-4">
+              {block.title}
+            </h3>
+          )}
+          {block.text && (
+            <div className="text-sm sm:text-base md:text-lg leading-relaxed font-light">
+              <PortableText value={block.text} components={portableTextComponents} />
+            </div>
+          )}
+          {block.callToAction?.text && (
+            <a
+              href={block.callToAction.url || '#'}
+              className="text-sm sm:text-base font-medium text-teal-dark underline hover:no-underline inline-block mt-4"
+            >
+              {block.callToAction.text}
+            </a>
+          )}
+        </div>
+      </div>
+    )
+
     return (
       <div className="grid grid-cols-1 md:grid-cols-2 gap-2 sm:gap-3 md:gap-4">
-        {block.image && (
-          <div className={`aspect-[4/3] overflow-hidden ${bgClass}`}>
-            <Image
-              src={getSanityImageUrl(block.image.asset._ref)}
-              alt={block.image.alt || ''}
-              width={400}
-              height={300}
-              className="w-full h-full object-cover"
-            />
-          </div>
-        )}
-        {block.text && (
-          <div className={`p-4 sm:p-6 md:p-8 flex items-center ${bgClass}`}>
-            <p className="text-sm sm:text-base md:text-lg leading-relaxed whitespace-pre-wrap font-light">
-              {block.text}
-            </p>
-          </div>
-        )}
+        {imageLeft ? <>{imageEl}{textEl}</> : <>{textEl}{imageEl}</>}
       </div>
     )
   }
@@ -204,11 +249,11 @@ export default function ContentBlock({ block }: ContentBlockProps) {
   // Quote Block
   if (block._type === 'quoteBlock') {
     return (
-      <div className={`p-6 sm:p-8 md:p-10 lg:p-12 ${bgClass}`}>
+      <div className="p-6 sm:p-8 md:p-10 lg:p-12 bg-white text-teal-dark">
         <blockquote className="text-center">
-          <p className="text-lg sm:text-xl md:text-2xl lg:text-3xl leading-relaxed font-light italic mb-4 sm:mb-6">
-            "{block.quote}"
-          </p>
+          <div className="text-lg sm:text-xl md:text-2xl lg:text-3xl leading-relaxed font-light italic mb-4 sm:mb-6">
+            {block.quote && <PortableText value={block.quote} components={portableTextComponents} />}
+          </div>
           {(block.author || block.role) && (
             <footer className="text-sm sm:text-base">
               {block.author && <span className="font-medium">{block.author}</span>}
@@ -238,16 +283,16 @@ export default function ContentBlock({ block }: ContentBlockProps) {
     const buttonClass = buttonStyles[block.style] || buttonStyles.filled
 
     return (
-      <div className={`p-6 sm:p-8 md:p-10 ${bgClass} ${align}`}>
+      <div className={`p-6 sm:p-8 md:p-10 bg-white text-teal-dark ${align}`}>
         {block.heading && (
           <h3 className="text-lg sm:text-xl md:text-2xl font-bold mb-2 sm:mb-3 text-teal-dark">
             {block.heading}
           </h3>
         )}
         {block.text && (
-          <p className="text-sm sm:text-base md:text-lg leading-relaxed font-light mb-4 sm:mb-6 max-w-2xl mx-auto">
-            {block.text}
-          </p>
+          <div className="text-sm sm:text-base md:text-lg leading-relaxed font-light mb-4 sm:mb-6 max-w-2xl mx-auto">
+            <PortableText value={block.text} components={portableTextComponents} />
+          </div>
         )}
         <a
           href={block.buttonUrl}

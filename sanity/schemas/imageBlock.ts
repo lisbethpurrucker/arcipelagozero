@@ -21,19 +21,6 @@ export default defineType({
         },
       ],
     }),
-    defineField({
-      name: 'backgroundColor',
-      title: 'Background Color (if no image)',
-      type: 'string',
-      options: {
-        list: [
-          {title: 'White', value: 'white'},
-          {title: 'Teal', value: 'teal'},
-          {title: 'Sand', value: 'sand'},
-        ],
-      },
-      initialValue: 'sand',
-    }),
   ],
   preview: {
     select: {
