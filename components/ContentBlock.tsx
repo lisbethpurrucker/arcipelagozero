@@ -59,7 +59,7 @@ export default function ContentBlock({ block }: ContentBlockProps) {
   if (block._type === 'textBlock') {
     const isHero = block.variant === 'hero'
     return (
-      <div className="p-4 sm:p-6 md:p-8 lg:p-10 bg-white text-teal-dark">
+      <div className={`bg-white text-teal-dark ${isHero ? 'relative -ml-4 sm:-ml-6 md:-ml-8 lg:-ml-12 pr-0 pl-2 sm:pl-3 py-4 sm:py-6 md:py-8 lg:py-10' : 'p-4 sm:p-6 md:p-8 lg:p-10'}`}>
         {block.title && (
           <h3 className="text-xs sm:text-sm font-bold uppercase tracking-wider text-teal-dark mb-3 sm:mb-4">
             {block.title}
@@ -203,19 +203,18 @@ export default function ContentBlock({ block }: ContentBlockProps) {
     const imageLeft = block.imagePosition === 'left'
 
     const imageEl = block.image && (
-      <div className="aspect-[4/3] overflow-hidden bg-white text-teal-dark">
+      <div className="relative overflow-hidden min-h-[200px]">
         <Image
           src={getSanityImageUrl(block.image.asset._ref)}
           alt={block.image.alt || ''}
-          width={400}
-          height={300}
-          className="w-full h-full object-cover"
+          fill
+          className="object-cover object-center"
         />
       </div>
     )
 
     const textEl = (
-      <div className="p-4 sm:p-6 md:p-8 flex items-start bg-white text-teal-dark">
+      <div className="flex items-start bg-white text-teal-dark py-2">
         <div>
           {block.title && (
             <h3 className="text-xs sm:text-sm font-bold uppercase tracking-wider text-teal-dark mb-3 sm:mb-4">
@@ -240,7 +239,7 @@ export default function ContentBlock({ block }: ContentBlockProps) {
     )
 
     return (
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-2 sm:gap-3 md:gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
         {imageLeft ? <>{imageEl}{textEl}</> : <>{textEl}{imageEl}</>}
       </div>
     )

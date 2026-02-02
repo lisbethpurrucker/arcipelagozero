@@ -24,7 +24,7 @@ export default async function Home() {
 
   return (
     <div>
-      <div className="space-y-4 sm:space-y-5 md:space-y-6">
+      <div className="space-y-8 sm:space-y-10 md:space-y-12 lg:space-y-16">
         {page.contentBlocks?.map((block) => (
           <ContentBlock key={block._key} block={block} />
         ))}

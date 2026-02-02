@@ -105,7 +105,7 @@ function MediaCarousel({ media }: { media: MediaItem[] }) {
               <video
                 ref={idx === currentIndex ? videoRef : null}
                 src={getSanityFileUrl(item.asset._ref)}
-                className="w-full h-full object-contain"
+                className="w-full h-full object-cover object-center"
                 autoPlay={idx === currentIndex}
                 muted
                 playsInline
@@ -116,7 +116,7 @@ function MediaCarousel({ media }: { media: MediaItem[] }) {
                 src={getSanityImageUrl(item.asset._ref)}
                 alt={item.alt || ''}
                 fill
-                className="object-contain"
+                className="object-cover object-center"
               />
             )}
           </div>
@@ -188,7 +188,7 @@ function AccordionItemComponent({
               </button>
             </div>
 
-            <div className={`grid grid-cols-1 ${hasCarousel ? 'md:grid-cols-2' : ''} gap-0 max-w-5xl mx-auto pb-6 sm:pb-8 md:pb-10`}>
+            <div className={`grid grid-cols-1 ${hasCarousel ? 'md:grid-cols-2' : ''} items-center gap-0 max-w-5xl mx-auto pb-6 sm:pb-8 md:pb-10`}>
               {/* Text content */}
               <div className={`px-4 sm:px-6 md:px-8 lg:px-12 ${hasCarousel ? 'mb-6 md:mb-0' : ''}`}>
                 <div className="text-sm sm:text-base md:text-lg leading-relaxed text-teal-dark font-light mb-4 sm:mb-6">
@@ -209,7 +209,7 @@ function AccordionItemComponent({
 
               {/* Carousel */}
               {hasCarousel && (
-                <div className="px-4 sm:px-6 md:px-8 lg:px-12 md:pl-0">
+                <div className="px-4 sm:px-6 md:px-8 lg:px-12">
                   <MediaCarousel media={item.carouselMedia!} />
                 </div>
               )}
