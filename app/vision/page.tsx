@@ -1,4 +1,4 @@
-import { sanityFetch } from '@/lib/sanity'
+import { sanityFetch, urlFor } from '@/lib/sanity'
 import { Page } from '@/lib/types'
 import ContentBlock from '@/components/ContentBlock'
 import Image from 'next/image'
@@ -9,17 +9,12 @@ const query = `*[_type == "page" && slug.current == "vision"][0]{
   slug,
   headerImage{
     asset,
-    alt
+    alt,
+    crop,
+    hotspot
   },
   contentBlocks[]
 }`
-
-// Convert Sanity image reference to CDN URL
-function getSanityImageUrl(ref: string): string {
-  const [, id, dimensions, format] = ref.match(/image-([a-f0-9]+)-(\d+x\d+)-(\w+)/) || []
-  if (!id) return ''
-  return `https://cdn.sanity.io/images/jpgrzyq0/production/${id}-${dimensions}.${format}`
-}
 
 export default async function Vision() {
   const page: Page | null = await sanityFetch({ query, tags: ['page'] })
@@ -28,13 +23,12 @@ export default async function Vision() {
     <div>
       {/* Header Image */}
       {page?.headerImage && (
-        <div className="relative left-1/2 right-1/2 -ml-[50vw] -mr-[50vw] w-screen mb-6 sm:mb-8 md:mb-10 h-[30vh] sm:h-[35vh] md:h-[40vh] overflow-hidden">
+        <div className="relative left-1/2 right-1/2 -ml-[50vw] -mr-[50vw] w-screen -mt-6 sm:-mt-8 md:-mt-10 lg:-mt-12 mb-6 sm:mb-8 md:mb-10 h-[25vh] sm:h-[30vh] md:h-[35vh] overflow-hidden">
           <Image
-            src={getSanityImageUrl(page.headerImage.asset._ref)}
+            src={urlFor(page.headerImage).width(1440).fit('crop').url()}
             alt={page.headerImage.alt || page.title || 'Header image'}
-            width={1920}
-            height={823}
-            className="w-full h-full object-cover"
+            fill
+            className="object-cover object-center"
             priority
           />
         </div>

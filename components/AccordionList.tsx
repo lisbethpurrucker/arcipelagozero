@@ -3,10 +3,15 @@
 import { useState, useEffect, useRef } from 'react'
 import Image from 'next/image'
 import { PortableText, PortableTextComponents } from '@portabletext/react'
+import { urlFor } from '@/lib/sanity'
 
 const portableTextComponents: PortableTextComponents = {
   block: {
-    normal: ({ children }) => <p className="mb-4 last:mb-0">{children}</p>,
+    normal: ({ children, value }) => {
+      const isEmpty = !value?.children?.some((child: any) => child.text?.trim())
+      if (isEmpty) return <div className="h-3" />
+      return <p className="mb-3 last:mb-0">{children}</p>
+    },
   },
   marks: {
     link: ({ children, value }) => (
@@ -38,13 +43,6 @@ export interface AccordionItem {
   }
   carouselMedia?: MediaItem[]
   order: number
-}
-
-// Convert Sanity image reference to CDN URL
-function getSanityImageUrl(ref: string): string {
-  const [, id, dimensions, format] = ref.match(/image-([a-f0-9]+)-(\d+x\d+)-(\w+)/) || []
-  if (!id) return ''
-  return `https://cdn.sanity.io/images/jpgrzyq0/production/${id}-${dimensions}.${format}`
 }
 
 // Convert Sanity file reference to CDN URL
@@ -113,7 +111,7 @@ function MediaCarousel({ media }: { media: MediaItem[] }) {
               />
             ) : (
               <Image
-                src={getSanityImageUrl(item.asset._ref)}
+                src={urlFor(item).width(600).fit('crop').url()}
                 alt={item.alt || ''}
                 fill
                 className="object-cover object-center"

@@ -2,10 +2,15 @@
 
 import Image from 'next/image'
 import { PortableText, PortableTextComponents } from '@portabletext/react'
+import { urlFor } from '@/lib/sanity'
 
 const portableTextComponents: PortableTextComponents = {
   block: {
-    normal: ({ children }) => <p className="mb-4 last:mb-0">{children}</p>,
+    normal: ({ children, value }) => {
+      const isEmpty = !value?.children?.some((child: any) => child.text?.trim())
+      if (isEmpty) return <div className="h-3" />
+      return <p className="mb-3 last:mb-0">{children}</p>
+    },
   },
   marks: {
     link: ({ children, value }) => (
@@ -23,13 +28,6 @@ const portableTextComponents: PortableTextComponents = {
 
 interface ContentBlockProps {
   block: any
-}
-
-// Convert Sanity image reference to CDN URL
-function getSanityImageUrl(ref: string): string {
-  const [, id, dimensions, format] = ref.match(/image-([a-f0-9]+)-(\d+x\d+)-(\w+)/) || []
-  if (!id) return ''
-  return `https://cdn.sanity.io/images/jpgrzyq0/production/${id}-${dimensions}.${format}`
 }
 
 // Convert Sanity file reference to CDN URL
@@ -86,7 +84,7 @@ export default function ContentBlock({ block }: ContentBlockProps) {
       <div className="aspect-[4/3] overflow-hidden bg-white text-teal-dark">
         {block.image ? (
           <Image
-            src={getSanityImageUrl(block.image.asset._ref)}
+            src={urlFor(block.image).width(800).height(600).fit('crop').url()}
             alt={block.image.alt || ''}
             width={800}
             height={600}
@@ -151,7 +149,7 @@ export default function ContentBlock({ block }: ContentBlockProps) {
           {block.images?.map((img: any, idx: number) => (
             <div key={idx} className="aspect-square overflow-hidden">
               <Image
-                src={getSanityImageUrl(img.asset._ref)}
+                src={urlFor(img).width(400).height(400).fit('crop').url()}
                 alt={img.alt || ''}
                 width={400}
                 height={400}
@@ -205,7 +203,7 @@ export default function ContentBlock({ block }: ContentBlockProps) {
     const imageEl = block.image && (
       <div className="relative overflow-hidden min-h-[200px]">
         <Image
-          src={getSanityImageUrl(block.image.asset._ref)}
+          src={urlFor(block.image).width(800).fit('crop').url()}
           alt={block.image.alt || ''}
           fill
           className="object-cover object-center"

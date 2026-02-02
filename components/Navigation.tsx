@@ -41,7 +41,7 @@ export default function Navigation({ navItems, instagramUrl = 'https://instagram
               alt="Arcipelago Zero"
               width={200}
               height={50}
-              className="h-10 sm:h-12 md:h-14 lg:h-16 w-auto"
+              className="h-8 sm:h-10 md:h-12 w-auto"
               priority
             />
           </Link>
