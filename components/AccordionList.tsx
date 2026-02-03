@@ -186,9 +186,9 @@ function AccordionItemComponent({
               </button>
             </div>
 
-            <div className={`grid grid-cols-1 ${hasCarousel ? 'md:grid-cols-2' : ''} items-center gap-0 max-w-5xl mx-auto pb-6 sm:pb-8 md:pb-10`}>
+            <div className={`grid grid-cols-1 ${hasCarousel ? 'md:grid-cols-2' : ''} items-start gap-4 md:gap-6 max-w-5xl mx-auto pb-6 sm:pb-8 md:pb-10 px-4 sm:px-6 md:px-8 lg:px-12`}>
               {/* Text content */}
-              <div className={`px-4 sm:px-6 md:px-8 lg:px-12 ${hasCarousel ? 'mb-6 md:mb-0' : ''}`}>
+              <div className={hasCarousel ? 'mb-2 md:mb-0' : ''}>
                 <div className="text-sm sm:text-base md:text-lg leading-relaxed text-teal-dark font-light mb-4 sm:mb-6">
                   {Array.isArray(item.content)
                     ? <PortableText value={item.content} components={portableTextComponents} />
@@ -207,7 +207,7 @@ function AccordionItemComponent({
 
               {/* Carousel */}
               {hasCarousel && (
-                <div className="px-4 sm:px-6 md:px-8 lg:px-12">
+                <div>
                   <MediaCarousel media={item.carouselMedia!} />
                 </div>
               )}

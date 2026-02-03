@@ -35,13 +35,13 @@ export default function Navigation({ navItems, instagramUrl = 'https://instagram
       <div className="max-w-7xl mx-auto px-4 py-4 sm:px-6 md:px-8 md:py-5">
         <div className="flex items-center justify-between">
           {/* Logo on the left */}
-          <Link href="/" className="block" onClick={() => setMobileMenuOpen(false)}>
+          <Link href="/" className="block -ml-3 sm:ml-0" onClick={() => setMobileMenuOpen(false)}>
             <Image
               src="/images/logo/logo.svg"
               alt="Arcipelago Zero"
               width={200}
               height={50}
-              className="h-8 sm:h-10 md:h-12 w-auto"
+              className="h-12 sm:h-14 md:h-16 -my-1 sm:-my-2 md:-my-3 w-auto"
               priority
             />
           </Link>
