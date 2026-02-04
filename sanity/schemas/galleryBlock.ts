@@ -4,11 +4,13 @@ export default defineType({
   name: 'galleryBlock',
   title: 'Gallery Block',
   type: 'object',
+  description: 'Display multiple images in a grid. Great for photo galleries, portfolios, or showcasing multiple views.',
   fields: [
     defineField({
       name: 'images',
       title: 'Images',
       type: 'array',
+      description: 'Add the images you want to display. Drag to reorder them. Click on any image to set its crop/hotspot.',
       of: [
         {
           type: 'image',
@@ -19,7 +21,8 @@ export default defineType({
             {
               name: 'alt',
               type: 'string',
-              title: 'Alternative text',
+              title: 'Image Description',
+              description: 'Describe what is shown in this image for accessibility and search engines.',
             },
           ],
         },
@@ -28,9 +31,9 @@ export default defineType({
     }),
     defineField({
       name: 'columns',
-      title: 'Columns',
+      title: 'Number of Columns',
       type: 'number',
-      description: 'Number of columns (2-4)',
+      description: 'How many images to show per row on desktop. On mobile, this automatically adjusts to fit the screen.',
       options: {
         list: [
           {title: '2 Columns', value: 2},
@@ -42,11 +45,12 @@ export default defineType({
     }),
     defineField({
       name: 'gap',
-      title: 'Gap Size',
+      title: 'Space Between Images',
       type: 'string',
+      description: 'Choose how much space appears between images. "None" creates a seamless grid.',
       options: {
         list: [
-          {title: 'None', value: 'none'},
+          {title: 'None (seamless)', value: 'none'},
           {title: 'Small', value: 'small'},
           {title: 'Medium', value: 'medium'},
           {title: 'Large', value: 'large'},
@@ -65,7 +69,6 @@ export default defineType({
       return {
         title: 'Gallery Block',
         subtitle: `${count} image${count !== 1 ? 's' : ''} in ${columns} columns`,
-        media: () => '🖼️',
       }
     },
   },

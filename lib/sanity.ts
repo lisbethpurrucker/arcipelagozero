@@ -17,11 +17,13 @@ export function urlFor(source: any) {
 export async function sanityFetch<T>({
   query,
   tags,
+  params = {},
 }: {
   query: string
   tags?: string[]
+  params?: Record<string, any>
 }): Promise<T> {
-  return client.fetch<T>(query, {}, {
+  return client.fetch<T>(query, params, {
     next: {
       tags,
       revalidate: 0 // Disable caching in development

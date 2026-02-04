@@ -4,11 +4,13 @@ export default defineType({
   name: 'quoteBlock',
   title: 'Quote Block',
   type: 'object',
+  description: 'A styled quote or testimonial. Use this to highlight what someone said about your work or an inspiring statement.',
   fields: [
     defineField({
       name: 'quote',
-      title: 'Quote',
+      title: 'Quote Text',
       type: 'array',
+      description: 'The actual quote. You can make parts bold or italic using the toolbar.',
       validation: (Rule) => Rule.required(),
       of: [
         {
@@ -25,7 +27,13 @@ export default defineType({
                 type: 'object',
                 title: 'Link',
                 fields: [
-                  {name: 'href', type: 'url', title: 'URL', validation: (Rule: any) => Rule.uri({allowRelative: true})},
+                  {
+                    name: 'href',
+                    type: 'url',
+                    title: 'URL',
+                    description: 'Link to the source of this quote, if applicable.',
+                    validation: (Rule: any) => Rule.uri({allowRelative: true}),
+                  },
                 ],
               },
             ],
@@ -35,15 +43,15 @@ export default defineType({
     }),
     defineField({
       name: 'author',
-      title: 'Author',
+      title: 'Author Name',
       type: 'string',
-      description: 'Name of the person being quoted',
+      description: 'Who said this quote? E.g. "Maria Rossi" or "The Guardian"',
     }),
     defineField({
       name: 'role',
-      title: 'Role/Title',
+      title: 'Author Title/Role',
       type: 'string',
-      description: 'Optional role or title of the author',
+      description: 'The author\'s title or role, shown after their name. E.g. "CEO at Company" or "Travel Writer"',
     }),
   ],
   preview: {

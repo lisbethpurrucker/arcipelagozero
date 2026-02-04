@@ -56,6 +56,13 @@ export default function ContentBlock({ block }: ContentBlockProps) {
   // Text Block
   if (block._type === 'textBlock') {
     const isHero = block.variant === 'hero'
+    const fontSizeClasses: Record<string, string> = {
+      small: 'text-xs sm:text-sm md:text-base',
+      normal: 'text-sm sm:text-base md:text-lg',
+      large: 'text-base sm:text-lg md:text-xl',
+    }
+    const fontSize = !isHero ? (fontSizeClasses[block.fontSize] || fontSizeClasses.normal) : ''
+
     return (
       <div className={`bg-white text-teal-dark ${isHero ? 'relative -ml-4 sm:-ml-6 md:-ml-8 lg:-ml-12 pr-0 pl-2 sm:pl-3 py-4 sm:py-6 md:py-8 lg:py-10' : 'p-4 sm:p-6 md:p-8 lg:p-10'}`}>
         {block.title && (
@@ -63,7 +70,7 @@ export default function ContentBlock({ block }: ContentBlockProps) {
             {block.title}
           </h3>
         )}
-        <div className={`prose max-w-none leading-relaxed ${isHero ? 'text-lg sm:text-xl md:text-2xl font-medium' : 'text-sm sm:text-base md:text-lg font-light'}`}>
+        <div className={`prose max-w-none leading-relaxed ${isHero ? 'text-lg sm:text-xl md:text-2xl font-medium' : `${fontSize} font-light`}`}>
           {block.text && <PortableText value={block.text} components={portableTextComponents} />}
         </div>
         {block.callToAction?.text && (

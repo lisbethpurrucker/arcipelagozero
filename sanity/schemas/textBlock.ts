@@ -4,29 +4,47 @@ export default defineType({
   name: 'textBlock',
   title: 'Text Block',
   type: 'object',
+  description: 'A simple text section. Use this for paragraphs, headings, or any written content.',
   fields: [
     defineField({
       name: 'variant',
-      title: 'Variant',
+      title: 'Style',
       type: 'string',
+      description: 'Choose how this text should appear. "Hero" is great for big opening statements at the top of a page.',
       options: {
         list: [
           {title: 'Normal', value: 'normal'},
-          {title: 'Hero (large text)', value: 'hero'},
+          {title: 'Hero (large, bold text)', value: 'hero'},
         ],
       },
       initialValue: 'normal',
     }),
     defineField({
-      name: 'title',
-      title: 'Title',
+      name: 'fontSize',
+      title: 'Text Size',
       type: 'string',
-      description: 'Optional heading above the text',
+      description: 'Adjust how large or small the text appears. Leave as "Normal" for most content.',
+      options: {
+        list: [
+          {title: 'Small', value: 'small'},
+          {title: 'Normal', value: 'normal'},
+          {title: 'Large', value: 'large'},
+        ],
+      },
+      initialValue: 'normal',
+      hidden: ({parent}) => parent?.variant === 'hero',
+    }),
+    defineField({
+      name: 'title',
+      title: 'Heading',
+      type: 'string',
+      description: 'Optional heading that appears above the text in bold, uppercase letters.',
     }),
     defineField({
       name: 'text',
-      title: 'Text',
+      title: 'Text Content',
       type: 'array',
+      description: 'Your main content. Use the toolbar to make text bold, italic, or add links. Press Enter twice to create a gap between paragraphs.',
       of: [
         {
           type: 'block',
@@ -42,7 +60,13 @@ export default defineType({
                 type: 'object',
                 title: 'Link',
                 fields: [
-                  {name: 'href', type: 'url', title: 'URL', validation: (Rule: any) => Rule.uri({allowRelative: true})},
+                  {
+                    name: 'href',
+                    type: 'url',
+                    title: 'URL',
+                    description: 'The web address to link to. Can be a full URL (https://...) or a page on this site (/contact).',
+                    validation: (Rule: any) => Rule.uri({allowRelative: true}),
+                  },
                 ],
               },
             ],
@@ -52,18 +76,21 @@ export default defineType({
     }),
     defineField({
       name: 'callToAction',
-      title: 'Call to Action',
+      title: 'Link Button',
       type: 'object',
+      description: 'Optional button or link that appears below the text.',
       fields: [
         {
           name: 'text',
-          title: 'Link Text',
+          title: 'Button Text',
           type: 'string',
+          description: 'What the link says, e.g. "Learn more" or "Contact us".',
         },
         {
           name: 'url',
-          title: 'URL',
+          title: 'Link URL',
           type: 'url',
+          description: 'Where the link goes. Can be a full URL or a page on this site (e.g. /contact).',
           validation: (Rule: any) => Rule.uri({allowRelative: true}),
         },
       ],

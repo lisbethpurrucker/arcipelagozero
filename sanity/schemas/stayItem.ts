@@ -2,19 +2,22 @@ import {defineField, defineType} from 'sanity'
 
 export default defineType({
   name: 'stayItem',
-  title: 'Stay Item',
+  title: 'Stay',
   type: 'document',
+  description: 'Add accommodation options or stay packages. Each appears as an expandable section on the Stays page.',
   fields: [
     defineField({
       name: 'title',
       title: 'Title',
       type: 'string',
+      description: 'The name of this stay or accommodation, e.g. "Garden Suite" or "Weekend Retreat".',
       validation: (Rule) => Rule.required(),
     }),
     defineField({
       name: 'content',
-      title: 'Content',
+      title: 'Description',
       type: 'array',
+      description: 'Describe this stay option. What\'s included? What makes it special? Use the toolbar for formatting.',
       validation: (Rule) => Rule.required(),
       of: [
         {
@@ -31,7 +34,13 @@ export default defineType({
                 type: 'object',
                 title: 'Link',
                 fields: [
-                  {name: 'href', type: 'url', title: 'URL', validation: (Rule: any) => Rule.uri({allowRelative: true})},
+                  {
+                    name: 'href',
+                    type: 'url',
+                    title: 'URL',
+                    description: 'Link to more information or booking page.',
+                    validation: (Rule: any) => Rule.uri({allowRelative: true}),
+                  },
                 ],
               },
             ],
@@ -41,30 +50,33 @@ export default defineType({
     }),
     defineField({
       name: 'callToAction',
-      title: 'Call to Action',
+      title: 'Book/Enquire Button',
       type: 'object',
+      description: 'Optional button for booking or enquiries.',
       fields: [
         {
           name: 'text',
           title: 'Button Text',
           type: 'string',
+          description: 'E.g. "Book Now", "Enquire", "Check Availability".',
         },
         {
           name: 'url',
-          title: 'URL',
+          title: 'Button Link',
           type: 'url',
+          description: 'Where the button leads (booking page, email, contact form, etc.).',
         },
       ],
     }),
     defineField({
       name: 'carouselMedia',
-      title: 'Carousel Media',
-      description: 'Add images or videos to the carousel',
+      title: 'Photos & Videos',
       type: 'array',
+      description: 'Add images or videos that showcase this stay. Visitors can swipe through them. Drag to reorder.',
       of: [
         {
           type: 'image',
-          title: 'Image',
+          title: 'Photo',
           options: {
             hotspot: true,
           },
@@ -73,7 +85,7 @@ export default defineType({
               name: 'alt',
               type: 'string',
               title: 'Description',
-              description: 'Briefly describe this image or video. This helps visually impaired visitors and improves search rankings.',
+              description: 'Describe what\'s shown for accessibility. E.g. "Bedroom with ocean view".',
             },
           ],
         },
@@ -88,7 +100,7 @@ export default defineType({
               name: 'alt',
               type: 'string',
               title: 'Description',
-              description: 'Briefly describe this image or video. This helps visually impaired visitors and improves search rankings.',
+              description: 'Describe the video content for accessibility.',
             },
           ],
         },
@@ -96,26 +108,27 @@ export default defineType({
     }),
     defineField({
       name: 'order',
-      title: 'Order',
+      title: 'Display Order',
       type: 'number',
-      description: 'Order in which this item appears on the Stays page',
+      description: 'Controls the position on the Stays page. Lower numbers appear first (e.g. 1 before 2).',
       validation: (Rule) => Rule.required().min(0),
     }),
     defineField({
       name: 'publishedAt',
-      title: 'Published At',
+      title: 'Published Date',
       type: 'datetime',
+      description: 'When this stay was added. Used for sorting if needed.',
       initialValue: () => new Date().toISOString(),
     }),
   ],
   orderings: [
     {
-      title: 'Order',
+      title: 'Display Order',
       name: 'order',
       by: [{field: 'order', direction: 'asc'}],
     },
     {
-      title: 'Published Date, New',
+      title: 'Newest First',
       name: 'publishedAtDesc',
       by: [{field: 'publishedAt', direction: 'desc'}],
     },

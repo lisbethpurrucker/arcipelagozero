@@ -4,25 +4,27 @@ export default defineType({
   name: 'member',
   title: 'Member',
   type: 'document',
+  description: 'Add team members, artists, advisors, or anyone you want to feature on the Members page.',
   fields: [
     defineField({
       name: 'name',
-      title: 'Name',
+      title: 'Full Name',
       type: 'string',
+      description: 'The person\'s name as it should appear on the website.',
       validation: (Rule) => Rule.required(),
     }),
     defineField({
       name: 'category',
       title: 'Category',
       type: 'string',
-      description: 'Enter any category name (e.g., "Founders", "Artists", "Advisors")',
+      description: 'Group members together under a heading. Type any category name (e.g. "Founders", "Artists", "Advisors"). Members with the same category are grouped together.',
       validation: (Rule) => Rule.required(),
     }),
     defineField({
       name: 'bio',
       title: 'Biography',
       type: 'array',
-      description: 'Optional biography text that appears when expanded',
+      description: 'A short bio that appears when visitors click on this member. Keep it concise and engaging.',
       of: [
         {
           type: 'block',
@@ -38,7 +40,13 @@ export default defineType({
                 type: 'object',
                 title: 'Link',
                 fields: [
-                  {name: 'href', type: 'url', title: 'URL', validation: (Rule: any) => Rule.uri({allowRelative: true})},
+                  {
+                    name: 'href',
+                    type: 'url',
+                    title: 'URL',
+                    description: 'Link to their website, portfolio, or social media.',
+                    validation: (Rule: any) => Rule.uri({allowRelative: true}),
+                  },
                 ],
               },
             ],
@@ -50,6 +58,7 @@ export default defineType({
       name: 'photo',
       title: 'Photo',
       type: 'image',
+      description: 'A headshot or portrait. Square photos work best. Use the crop/hotspot tool to focus on their face.',
       options: {
         hotspot: true,
       },
@@ -57,16 +66,16 @@ export default defineType({
         {
           name: 'alt',
           type: 'string',
-          title: 'Photo description',
-          description: 'Describe who is in the photo. This helps visually impaired visitors. E.g. "Portrait of Maria Rossi"',
+          title: 'Photo Description',
+          description: 'Describe who is in the photo. E.g. "Portrait of Maria Rossi"',
         },
       ],
     }),
     defineField({
       name: 'order',
-      title: 'Order',
+      title: 'Display Order',
       type: 'number',
-      description: 'Order within the category',
+      description: 'Controls the position within this category. Lower numbers appear first (e.g. 1 before 2).',
       validation: (Rule) => Rule.required().min(0),
     }),
   ],

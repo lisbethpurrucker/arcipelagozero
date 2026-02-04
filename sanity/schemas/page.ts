@@ -4,6 +4,7 @@ export default defineType({
   name: 'page',
   title: 'Page',
   type: 'document',
+  description: 'Create and manage pages for your website. Each page can have its own content blocks and settings.',
   groups: [
     {name: 'content', title: 'Content', default: true},
     {name: 'navigation', title: 'Navigation'},
@@ -12,15 +13,17 @@ export default defineType({
   fields: [
     defineField({
       name: 'title',
-      title: 'Title',
+      title: 'Page Title',
       type: 'string',
+      description: 'The name of this page. This appears in browser tabs and search results.',
       validation: (Rule) => Rule.required(),
       group: 'content',
     }),
     defineField({
       name: 'slug',
-      title: 'Slug',
+      title: 'URL Slug',
       type: 'slug',
+      description: 'The web address for this page. Click "Generate" to create one from the title. E.g. "about-us" creates yoursite.com/about-us',
       options: {
         source: 'title',
         maxLength: 96,
@@ -32,7 +35,7 @@ export default defineType({
       name: 'headerImage',
       title: 'Header Image',
       type: 'image',
-      description: 'Optional header/hero image displayed at the top of the page',
+      description: 'Optional large image that appears at the very top of the page, spanning the full width. Great for setting the mood.',
       options: {
         hotspot: true,
       },
@@ -40,7 +43,8 @@ export default defineType({
         {
           name: 'alt',
           type: 'string',
-          title: 'Alternative text',
+          title: 'Image Description',
+          description: 'Describe what is shown for accessibility and search engines.',
         },
       ],
       group: 'content',
@@ -49,6 +53,7 @@ export default defineType({
       name: 'contentBlocks',
       title: 'Content Blocks',
       type: 'array',
+      description: 'Build your page by adding content blocks. Click "+ Add item" to add text, images, videos, quotes, and more. Drag to reorder.',
       of: [
         {type: 'textBlock'},
         {type: 'imageBlock'},
@@ -65,9 +70,9 @@ export default defineType({
     // Navigation settings
     defineField({
       name: 'showInNav',
-      title: 'Show in Navigation',
+      title: 'Show in Navigation Menu',
       type: 'boolean',
-      description: 'Display this page in the main navigation menu',
+      description: 'When enabled, this page appears in the main navigation at the top of the website.',
       initialValue: true,
       group: 'navigation',
     }),
@@ -75,14 +80,14 @@ export default defineType({
       name: 'navLabel',
       title: 'Navigation Label',
       type: 'string',
-      description: 'Custom label for navigation (uses page title if empty)',
+      description: 'What this page is called in the navigation menu. Leave empty to use the page title.',
       group: 'navigation',
     }),
     defineField({
       name: 'navOrder',
       title: 'Navigation Order',
       type: 'number',
-      description: 'Order in navigation menu (lower numbers appear first)',
+      description: 'Controls the position in the navigation menu. Lower numbers appear first (e.g. 10 before 20).',
       initialValue: 10,
       group: 'navigation',
     }),
@@ -91,7 +96,7 @@ export default defineType({
       name: 'isPublished',
       title: 'Published',
       type: 'boolean',
-      description: 'Unpublished pages are hidden from the site but not deleted',
+      description: 'When disabled, this page is hidden from visitors but not deleted. Useful for drafts or seasonal content.',
       initialValue: true,
       group: 'settings',
     }),

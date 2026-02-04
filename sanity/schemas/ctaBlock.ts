@@ -2,20 +2,21 @@ import {defineField, defineType} from 'sanity'
 
 export default defineType({
   name: 'ctaBlock',
-  title: 'CTA Block',
+  title: 'Call-to-Action Block',
   type: 'object',
+  description: 'A prominent button or link to encourage visitors to take action (e.g. "Book Now", "Contact Us", "Learn More").',
   fields: [
     defineField({
       name: 'heading',
       title: 'Heading',
       type: 'string',
-      description: 'Optional heading above the button',
+      description: 'Optional heading above the button, e.g. "Ready to get started?" Leave empty for just a button.',
     }),
     defineField({
       name: 'text',
-      title: 'Description',
+      title: 'Supporting Text',
       type: 'array',
-      description: 'Optional description text',
+      description: 'Optional text between the heading and button. Keep it brief and compelling.',
       of: [
         {
           type: 'block',
@@ -31,7 +32,12 @@ export default defineType({
                 type: 'object',
                 title: 'Link',
                 fields: [
-                  {name: 'href', type: 'url', title: 'URL', validation: (Rule: any) => Rule.uri({allowRelative: true})},
+                  {
+                    name: 'href',
+                    type: 'url',
+                    title: 'URL',
+                    validation: (Rule: any) => Rule.uri({allowRelative: true}),
+                  },
                 ],
               },
             ],
@@ -43,23 +49,26 @@ export default defineType({
       name: 'buttonText',
       title: 'Button Text',
       type: 'string',
+      description: 'What the button says. Keep it short and action-oriented: "Book Now", "Get Started", "Contact Us".',
       validation: (Rule) => Rule.required(),
     }),
     defineField({
       name: 'buttonUrl',
-      title: 'Button URL',
+      title: 'Button Link',
       type: 'url',
+      description: 'Where visitors go when they click. Can be a page on this site (/contact) or an external URL (https://...).',
       validation: (Rule) => Rule.required().uri({allowRelative: true}),
     }),
     defineField({
       name: 'style',
       title: 'Button Style',
       type: 'string',
+      description: 'How the button looks. "Filled" is most prominent, "Text Link" is most subtle.',
       options: {
         list: [
-          {title: 'Filled', value: 'filled'},
-          {title: 'Outline', value: 'outline'},
-          {title: 'Text Link', value: 'link'},
+          {title: 'Filled (solid background)', value: 'filled'},
+          {title: 'Outline (bordered)', value: 'outline'},
+          {title: 'Text Link (underlined text)', value: 'link'},
         ],
       },
       initialValue: 'filled',
@@ -68,6 +77,7 @@ export default defineType({
       name: 'alignment',
       title: 'Alignment',
       type: 'string',
+      description: 'Where the content appears horizontally on the page.',
       options: {
         list: [
           {title: 'Left', value: 'left'},
@@ -85,7 +95,7 @@ export default defineType({
     },
     prepare({heading, buttonText}) {
       return {
-        title: 'CTA Block',
+        title: 'Call-to-Action Block',
         subtitle: heading || buttonText || 'No text',
       }
     },
