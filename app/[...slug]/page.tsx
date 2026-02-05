@@ -2,16 +2,24 @@ import { sanityFetch, urlFor } from '@/lib/sanity'
 import { Page } from '@/lib/types'
 import ContentBlock from '@/components/ContentBlock'
 import Image from 'next/image'
-import { notFound } from 'next/navigation'
+import { notFound, redirect } from 'next/navigation'
 
 interface PageProps {
-  params: Promise<{ slug: string }>
+  params: Promise<{ slug: string[] }>
 }
 
-const query = `*[_type == "page" && slug.current == $slug][0]{
+interface PageWithNavInfo extends Page {
+  isNavParentOnly?: boolean
+}
+
+const query = `*[_type == "page" && slug.current == $slug && (
+  ($parentSlug == "" && !defined(parent)) ||
+  (parent->slug.current == $parentSlug)
+)][0]{
   _id,
   title,
   slug,
+  isNavParentOnly,
   headerImage{
     asset,
     alt,
@@ -22,15 +30,25 @@ const query = `*[_type == "page" && slug.current == $slug][0]{
 }`
 
 export default async function DynamicPage({ params }: PageProps) {
-  const { slug } = await params
-  const page: Page | null = await sanityFetch({
+  const { slug: slugArray } = await params
+
+  // Handle nested paths: /stays/garden-suite -> ['stays', 'garden-suite']
+  const slug = slugArray[slugArray.length - 1]
+  const parentSlug = slugArray.length > 1 ? slugArray[slugArray.length - 2] : ''
+
+  const page: PageWithNavInfo | null = await sanityFetch({
     query,
     tags: ['page'],
-    params: { slug }
+    params: { slug, parentSlug }
   })
 
   if (!page) {
     notFound()
+  }
+
+  // Redirect nav-parent-only pages to homepage
+  if (page.isNavParentOnly) {
+    redirect('/')
   }
 
   return (
@@ -61,14 +79,19 @@ export default async function DynamicPage({ params }: PageProps) {
   )
 }
 
-// Generate static params for known pages
+// Generate static params for known pages (exclude nav-parent-only pages)
 export async function generateStaticParams() {
-  const pages = await sanityFetch<{ slug: { current: string } }[]>({
-    query: `*[_type == "page" && defined(slug.current)]{ slug }`,
+  const pages = await sanityFetch<{ slug: string; parentSlug: string | null }[]>({
+    query: `*[_type == "page" && defined(slug.current) && isNavParentOnly != true]{
+      "slug": slug.current,
+      "parentSlug": parent->slug.current
+    }`,
     tags: ['page']
   })
 
   return pages.map((page) => ({
-    slug: page.slug.current,
+    slug: page.parentSlug
+      ? [page.parentSlug, page.slug]
+      : [page.slug],
   }))
 }

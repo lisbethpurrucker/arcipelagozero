@@ -4,48 +4,86 @@ import Navigation from './Navigation'
 export interface NavItem {
   label: string
   href: string
-  order: number
+  isNavParentOnly?: boolean
+  children?: NavItem[]
+}
+
+export interface SocialLink {
+  platform: string
+  url: string
+  showInNav: boolean
+}
+
+interface PageNavData {
+  _id: string
+  label: string
+  slug: string
+  navOrder: number
+  isNavParentOnly?: boolean
+  parentId?: string
+  parentSlug?: string
 }
 
 interface SiteSettings {
-  showAgenda?: boolean
-  agendaLabel?: string
-  agendaOrder?: number
-  showStays?: boolean
-  staysLabel?: string
-  staysOrder?: number
-  showJourney?: boolean
-  journeyLabel?: string
-  journeyOrder?: number
-  showMembers?: boolean
-  membersLabel?: string
-  membersOrder?: number
-  instagramUrl?: string
-  showInstagram?: boolean
+  socialLinks?: SocialLink[]
 }
 
-const pagesQuery = `*[_type == "page" && isPublished == true && showInNav == true] | order(navOrder asc) {
+const pagesQuery = `*[_type == "page" && isPublished == true && showInNav == true] {
+  _id,
   "label": coalesce(navLabel, title),
-  "href": "/" + slug.current,
-  "order": navOrder
+  "slug": slug.current,
+  navOrder,
+  isNavParentOnly,
+  "parentId": parent._ref,
+  "parentSlug": parent->slug.current
 }`
 
 const settingsQuery = `*[_type == "siteSettings"][0] {
-  showAgenda,
-  agendaLabel,
-  agendaOrder,
-  showStays,
-  staysLabel,
-  staysOrder,
-  showJourney,
-  journeyLabel,
-  journeyOrder,
-  showMembers,
-  membersLabel,
-  membersOrder,
-  instagramUrl,
-  showInstagram
+  socialLinks[] {
+    platform,
+    url,
+    showInNav
+  }
 }`
+
+function buildNavHierarchy(pages: PageNavData[]): NavItem[] {
+  // Separate top-level pages from children
+  const topLevel = pages.filter(p => !p.parentId)
+  const children = pages.filter(p => p.parentId)
+
+  // Build map of parent ID to children
+  const childrenByParent = new Map<string, PageNavData[]>()
+  for (const child of children) {
+    const existing = childrenByParent.get(child.parentId!) || []
+    existing.push(child)
+    childrenByParent.set(child.parentId!, existing)
+  }
+
+  // Convert to NavItem structure
+  const navItems: NavItem[] = topLevel
+    .sort((a, b) => (a.navOrder ?? 0) - (b.navOrder ?? 0))
+    .map(page => {
+      const pageChildren = childrenByParent.get(page._id) || []
+      const sortedChildren = pageChildren.sort((a, b) => (a.navOrder ?? 0) - (b.navOrder ?? 0))
+
+      const item: NavItem = {
+        label: page.label,
+        href: `/${page.slug}`,
+        isNavParentOnly: page.isNavParentOnly,
+      }
+
+      if (sortedChildren.length > 0) {
+        item.children = sortedChildren.map(child => ({
+          label: child.label,
+          href: `/${page.slug}/${child.slug}`,
+        }))
+      }
+
+      return item
+    })
+
+  return navItems
+}
 
 export default async function NavigationWrapper() {
   let navItems: NavItem[] = []
@@ -53,62 +91,23 @@ export default async function NavigationWrapper() {
 
   try {
     const [pages, siteSettings] = await Promise.all([
-      sanityFetch<NavItem[]>({ query: pagesQuery, tags: ['page'] }),
+      sanityFetch<PageNavData[]>({ query: pagesQuery, tags: ['page'] }),
       sanityFetch<SiteSettings | null>({ query: settingsQuery, tags: ['siteSettings'] })
     ])
 
-    navItems = pages || []
+    navItems = buildNavHierarchy(pages || [])
     settings = siteSettings || {}
   } catch (error) {
     console.log('Failed to fetch nav data from Sanity')
   }
 
-  // Add special pages based on settings (with defaults if no settings exist)
-  const specialPages: NavItem[] = []
-
-  if (settings.showAgenda !== false) {
-    specialPages.push({
-      label: settings.agendaLabel || 'Agenda',
-      href: '/agenda',
-      order: settings.agendaOrder ?? 20
-    })
-  }
-
-  if (settings.showStays !== false) {
-    specialPages.push({
-      label: settings.staysLabel || 'Stays',
-      href: '/stays',
-      order: settings.staysOrder ?? 30
-    })
-  }
-
-  if (settings.showJourney !== false) {
-    specialPages.push({
-      label: settings.journeyLabel || 'Journey',
-      href: '/journey',
-      order: settings.journeyOrder ?? 40
-    })
-  }
-
-  if (settings.showMembers !== false) {
-    specialPages.push({
-      label: settings.membersLabel || 'Members',
-      href: '/members',
-      order: settings.membersOrder ?? 50
-    })
-  }
-
-  // Combine and sort all nav items by order
-  const allNavItems = [...navItems, ...specialPages].sort((a, b) => a.order - b.order)
-
-  // Remove order from final items (not needed by Navigation component)
-  const finalNavItems = allNavItems.map(({ label, href }) => ({ label, href }))
+  // Filter social links to only those that should show in nav
+  const navSocialLinks = (settings.socialLinks || []).filter(link => link.showInNav !== false)
 
   return (
     <Navigation
-      navItems={finalNavItems}
-      instagramUrl={settings.instagramUrl || 'https://instagram.com'}
-      showInstagram={settings.showInstagram !== false}
+      navItems={navItems}
+      socialLinks={navSocialLinks}
     />
   )
 }

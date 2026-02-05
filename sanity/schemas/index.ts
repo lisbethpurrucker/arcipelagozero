@@ -4,15 +4,13 @@ import imageBlock from './imageBlock'
 import mixedBlock from './mixedBlock'
 import videoBlock from './videoBlock'
 import galleryBlock from './galleryBlock'
+import carouselBlock from './carouselBlock'
 import embedBlock from './embedBlock'
 import quoteBlock from './quoteBlock'
 import ctaBlock from './ctaBlock'
 import spacerBlock from './spacerBlock'
-import agendaItem from './agendaItem'
-import stayItem from './stayItem'
-import journeyItem from './journeyItem'
-import member from './member'
 import siteSettings from './siteSettings'
+import socialLink from './socialLink'
 
 export const schemaTypes = [
   // Singleton
@@ -20,10 +18,6 @@ export const schemaTypes = [
 
   // Document types
   page,
-  agendaItem,
-  stayItem,
-  journeyItem,
-  member,
 
   // Block types
   textBlock,
@@ -31,8 +25,12 @@ export const schemaTypes = [
   mixedBlock,
   videoBlock,
   galleryBlock,
+  carouselBlock,
   embedBlock,
   quoteBlock,
   ctaBlock,
   spacerBlock,
+
+  // Object types
+  socialLink,
 ]

@@ -3,6 +3,7 @@
 import Image from 'next/image'
 import { PortableText, PortableTextComponents } from '@portabletext/react'
 import { urlFor } from '@/lib/sanity'
+import { useState, useEffect, useCallback } from 'react'
 
 const portableTextComponents: PortableTextComponents = {
   block: {
@@ -28,6 +29,193 @@ const portableTextComponents: PortableTextComponents = {
 
 interface ContentBlockProps {
   block: any
+}
+
+// Carousel Block Component
+function CarouselBlock({ block }: { block: any }) {
+  const items = block.items || []
+  const itemCount = items.length
+  const autoSwipe = block.autoSwipe !== false
+  const interval = (block.autoSwipeInterval || 5) * 1000
+
+  const [currentIndex, setCurrentIndex] = useState(0)
+  const [isPaused, setIsPaused] = useState(false)
+  const [itemsPerPage, setItemsPerPage] = useState(3)
+  const [touchStart, setTouchStart] = useState<number | null>(null)
+
+  // Update items per page based on screen size
+  useEffect(() => {
+    const updateItemsPerPage = () => {
+      if (window.innerWidth < 640) {
+        setItemsPerPage(1)
+      } else if (window.innerWidth < 1024) {
+        setItemsPerPage(2)
+      } else {
+        setItemsPerPage(3)
+      }
+    }
+
+    updateItemsPerPage()
+    window.addEventListener('resize', updateItemsPerPage)
+    return () => window.removeEventListener('resize', updateItemsPerPage)
+  }, [])
+
+  const maxIndex = Math.max(0, itemCount - itemsPerPage)
+
+  const goToNext = useCallback(() => {
+    setCurrentIndex((prev) => (prev >= maxIndex ? 0 : prev + 1))
+  }, [maxIndex])
+
+  const goToPrev = useCallback(() => {
+    setCurrentIndex((prev) => (prev <= 0 ? maxIndex : prev - 1))
+  }, [maxIndex])
+
+  const goToPage = (pageIndex: number) => {
+    setCurrentIndex(Math.min(pageIndex, maxIndex))
+  }
+
+  // Reset index when itemsPerPage changes
+  useEffect(() => {
+    if (currentIndex > maxIndex) {
+      setCurrentIndex(maxIndex)
+    }
+  }, [maxIndex, currentIndex])
+
+  // Auto-swipe effect
+  useEffect(() => {
+    if (!autoSwipe || isPaused || itemCount <= itemsPerPage) return
+
+    const timer = setInterval(goToNext, interval)
+    return () => clearInterval(timer)
+  }, [autoSwipe, isPaused, interval, goToNext, itemCount, itemsPerPage])
+
+  // Touch handlers for swipe
+  const handleTouchStart = (e: React.TouchEvent) => {
+    setTouchStart(e.touches[0].clientX)
+  }
+
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    if (touchStart === null) return
+
+    const touchEnd = e.changedTouches[0].clientX
+    const diff = touchStart - touchEnd
+
+    if (Math.abs(diff) > 50) {
+      if (diff > 0) {
+        goToNext()
+      } else {
+        goToPrev()
+      }
+    }
+
+    setTouchStart(null)
+  }
+
+  // Calculate number of pages for dots
+  const pageCount = Math.max(1, maxIndex + 1)
+
+  return (
+    <div
+      className="py-4"
+      onMouseEnter={() => setIsPaused(true)}
+      onMouseLeave={() => setIsPaused(false)}
+    >
+      {/* Carousel container */}
+      <div
+        className="relative overflow-hidden"
+        onTouchStart={handleTouchStart}
+        onTouchEnd={handleTouchEnd}
+      >
+        <div
+          className="flex transition-transform duration-500 ease-in-out"
+          style={{
+            transform: `translateX(-${currentIndex * (100 / itemsPerPage)}%)`,
+          }}
+        >
+          {items.map((item: any, idx: number) => (
+            <div
+              key={idx}
+              className="flex-shrink-0 px-2 sm:px-3"
+              style={{ width: `${100 / itemsPerPage}%` }}
+            >
+              <div className="flex flex-col">
+                {/* Image */}
+                <div className="aspect-[3/4] overflow-hidden rounded-sm mb-4">
+                  {item.link ? (
+                    <a href={item.link} className="block h-full">
+                      <Image
+                        src={urlFor(item.image).width(400).height(533).fit('crop').url()}
+                        alt={item.title || ''}
+                        width={400}
+                        height={533}
+                        className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
+                      />
+                    </a>
+                  ) : (
+                    <Image
+                      src={urlFor(item.image).width(400).height(533).fit('crop').url()}
+                      alt={item.title || ''}
+                      width={400}
+                      height={533}
+                      className="w-full h-full object-cover"
+                    />
+                  )}
+                </div>
+                {/* Subtitle */}
+                {item.subtitle && (
+                  <p className="text-sm text-center text-teal-dark/70 mb-1">
+                    {item.subtitle}
+                  </p>
+                )}
+                {/* Title */}
+                {item.title && (
+                  <h3 className="text-base sm:text-lg font-bold text-center text-teal-dark uppercase tracking-wide">
+                    {item.link ? (
+                      <a href={item.link} className="hover:underline">
+                        {item.title}
+                      </a>
+                    ) : (
+                      item.title
+                    )}
+                  </h3>
+                )}
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Pagination dots */}
+      {pageCount > 1 && (
+        <div className="flex justify-center gap-2 mt-6">
+          {Array.from({ length: pageCount }).map((_, idx) => (
+            <button
+              key={idx}
+              onClick={() => goToPage(idx)}
+              className={`w-2.5 h-2.5 rounded-full transition-colors ${
+                idx === currentIndex
+                  ? 'bg-teal-dark'
+                  : 'bg-teal-dark/30 hover:bg-teal-dark/50'
+              }`}
+              aria-label={`Go to slide ${idx + 1}`}
+            />
+          ))}
+        </div>
+      )}
+
+      {/* CTA Button */}
+      {block.showButton && block.buttonText && (
+        <div className="flex justify-center mt-6">
+          <a
+            href={block.buttonUrl || '#'}
+            className="inline-block bg-gray-500 text-white px-6 py-3 rounded-sm hover:bg-gray-600 transition-colors"
+          >
+            {block.buttonText}
+          </a>
+        </div>
+      )}
+    </div>
+  )
 }
 
 // Convert Sanity file reference to CDN URL
@@ -167,6 +355,11 @@ export default function ContentBlock({ block }: ContentBlockProps) {
         </div>
       </div>
     )
+  }
+
+  // Carousel Block
+  if (block._type === 'carouselBlock') {
+    return <CarouselBlock block={block} />
   }
 
   // Embed Block (YouTube/Vimeo)

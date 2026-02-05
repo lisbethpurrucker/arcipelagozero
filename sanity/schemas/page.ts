@@ -23,12 +23,20 @@ export default defineType({
       name: 'slug',
       title: 'URL Slug',
       type: 'slug',
-      description: 'The web address for this page. Click "Generate" to create one from the title. E.g. "about-us" creates yoursite.com/about-us',
+      description: 'The web address for this page. Click "Generate" to create one from the title. For example, "about-us" creates yoursite.com/about-us.',
       options: {
         source: 'title',
         maxLength: 96,
       },
       validation: (Rule) => Rule.required(),
+      group: 'content',
+    }),
+    defineField({
+      name: 'isNavParentOnly',
+      title: 'Navigation Parent Only',
+      type: 'boolean',
+      description: 'Turn this on if this page is only meant to group other pages in the menu (like "Stays" grouping "Creative Residency" and "Chill Stay"). This page won\'t have any content — it just acts as a dropdown menu in the navigation. Visitors who try to visit this page directly will be sent to the homepage.',
+      initialValue: false,
       group: 'content',
     }),
     defineField({
@@ -44,10 +52,11 @@ export default defineType({
           name: 'alt',
           type: 'string',
           title: 'Image Description',
-          description: 'Describe what is shown for accessibility and search engines.',
+          description: 'Describe what is shown in the image. This helps visually impaired visitors and improves search rankings.',
         },
       ],
       group: 'content',
+      hidden: ({document}) => document?.isNavParentOnly === true,
     }),
     defineField({
       name: 'contentBlocks',
@@ -59,6 +68,7 @@ export default defineType({
         {type: 'imageBlock'},
         {type: 'videoBlock'},
         {type: 'galleryBlock'},
+        {type: 'carouselBlock'},
         {type: 'embedBlock'},
         {type: 'mixedBlock'},
         {type: 'quoteBlock'},
@@ -66,13 +76,14 @@ export default defineType({
         {type: 'spacerBlock'},
       ],
       group: 'content',
+      hidden: ({document}) => document?.isNavParentOnly === true,
     }),
     // Navigation settings
     defineField({
       name: 'showInNav',
       title: 'Show in Navigation Menu',
       type: 'boolean',
-      description: 'When enabled, this page appears in the main navigation at the top of the website.',
+      description: 'Turn this on to make this page appear in the main navigation menu at the top of the website.',
       initialValue: true,
       group: 'navigation',
     }),
@@ -80,15 +91,29 @@ export default defineType({
       name: 'navLabel',
       title: 'Navigation Label',
       type: 'string',
-      description: 'What this page is called in the navigation menu. Leave empty to use the page title.',
+      description: 'What this page is called in the navigation menu. Leave empty to use the page title. Useful if you want a shorter name in the menu.',
       group: 'navigation',
     }),
     defineField({
       name: 'navOrder',
       title: 'Navigation Order',
       type: 'number',
-      description: 'Controls the position in the navigation menu. Lower numbers appear first (e.g. 10 before 20).',
+      description: 'Controls where this page appears in the navigation menu. Lower numbers appear first. For example, a page with order 10 appears before one with order 20.',
       initialValue: 10,
+      group: 'navigation',
+    }),
+    defineField({
+      name: 'parent',
+      title: 'Parent Page',
+      type: 'reference',
+      to: [{type: 'page'}],
+      description: 'Choose a parent page to nest this page under. This page will appear in the parent\'s dropdown menu, and its URL will include the parent\'s slug (e.g., /stays/creative-residency).',
+      options: {
+        filter: ({document}) => ({
+          filter: '_id != $id && !defined(parent)',
+          params: {id: document._id},
+        }),
+      },
       group: 'navigation',
     }),
     // Page settings
@@ -96,7 +121,7 @@ export default defineType({
       name: 'isPublished',
       title: 'Published',
       type: 'boolean',
-      description: 'When disabled, this page is hidden from visitors but not deleted. Useful for drafts or seasonal content.',
+      description: 'Turn this off to hide this page from visitors without deleting it. Useful for drafts or seasonal content you want to bring back later.',
       initialValue: true,
       group: 'settings',
     }),
@@ -112,16 +137,20 @@ export default defineType({
     select: {
       title: 'title',
       slug: 'slug.current',
+      parentSlug: 'parent.slug.current',
       isPublished: 'isPublished',
       showInNav: 'showInNav',
+      isNavParentOnly: 'isNavParentOnly',
     },
-    prepare({title, slug, isPublished, showInNav}) {
+    prepare({title, slug, parentSlug, isPublished, showInNav, isNavParentOnly}) {
       const status = []
+      if (isNavParentOnly) status.push('Nav parent only')
       if (isPublished === false) status.push('Hidden')
       if (showInNav === false) status.push('Not in nav')
+      const path = parentSlug ? `/${parentSlug}/${slug}` : `/${slug}`
       return {
         title: title,
-        subtitle: `/${slug}${status.length ? ' • ' + status.join(', ') : ''}`,
+        subtitle: `${path}${status.length ? ' • ' + status.join(', ') : ''}`,
       }
     },
   },
