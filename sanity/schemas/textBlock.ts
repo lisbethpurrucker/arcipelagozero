@@ -23,16 +23,32 @@ export default defineType({
       name: 'fontSize',
       title: 'Text Size',
       type: 'string',
-      description: 'Adjust how large or small the text appears. Leave as "Normal" for most content.',
+      description: 'Choose the size of the text. "Body" is the standard reading size for most content.',
       options: {
         list: [
-          {title: 'Small', value: 'small'},
-          {title: 'Normal', value: 'normal'},
-          {title: 'Large', value: 'large'},
+          {title: 'Caption (12px)', value: 'caption'},
+          {title: 'Body (16px)', value: 'body'},
+          {title: 'Lead (18px)', value: 'lead'},
+          {title: 'Subheading (20px)', value: 'subheading'},
+          {title: 'Heading (24px)', value: 'heading'},
         ],
       },
-      initialValue: 'normal',
+      initialValue: 'body',
       hidden: ({parent}) => parent?.variant === 'hero',
+    }),
+    defineField({
+      name: 'textAlign',
+      title: 'Text Alignment',
+      type: 'string',
+      description: 'Choose how the text is aligned within the block.',
+      options: {
+        list: [
+          {title: 'Left', value: 'left'},
+          {title: 'Center', value: 'center'},
+          {title: 'Right', value: 'right'},
+        ],
+      },
+      initialValue: 'left',
     }),
     defineField({
       name: 'title',

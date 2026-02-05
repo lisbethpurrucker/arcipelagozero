@@ -245,14 +245,22 @@ export default function ContentBlock({ block }: ContentBlockProps) {
   if (block._type === 'textBlock') {
     const isHero = block.variant === 'hero'
     const fontSizeClasses: Record<string, string> = {
-      small: 'text-xs sm:text-sm md:text-base',
-      normal: 'text-sm sm:text-base md:text-lg',
-      large: 'text-base sm:text-lg md:text-xl',
+      caption: 'text-xs',
+      body: 'text-base',
+      lead: 'text-lg',
+      subheading: 'text-xl',
+      heading: 'text-2xl',
     }
-    const fontSize = !isHero ? (fontSizeClasses[block.fontSize] || fontSizeClasses.normal) : ''
+    const textAlignClasses: Record<string, string> = {
+      left: 'text-left',
+      center: 'text-center',
+      right: 'text-right',
+    }
+    const fontSize = !isHero ? (fontSizeClasses[block.fontSize] || fontSizeClasses.body) : ''
+    const textAlign = textAlignClasses[block.textAlign] || textAlignClasses.left
 
     return (
-      <div className={`bg-white text-teal-dark ${isHero ? 'relative -ml-4 sm:-ml-6 md:-ml-8 lg:-ml-12 pr-0 pl-2 sm:pl-3 py-4 sm:py-6 md:py-8 lg:py-10' : 'p-4 sm:p-6 md:p-8 lg:p-10'}`}>
+      <div className={`bg-white text-teal-dark ${textAlign} ${isHero ? 'relative -ml-4 sm:-ml-6 md:-ml-8 lg:-ml-12 pr-0 pl-2 sm:pl-3 py-4 sm:py-6 md:py-8 lg:py-10' : 'p-4 sm:p-6 md:p-8 lg:p-10'}`}>
         {block.title && (
           <h3 className="text-xs sm:text-sm font-bold uppercase tracking-wider text-teal-dark mb-3 sm:mb-4">
             {block.title}
