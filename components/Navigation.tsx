@@ -100,6 +100,7 @@ export default function Navigation({ navItems, socialLinks = [] }: NavigationPro
         backgroundImage: 'url(/images/pattern-lines-sand.png)',
         backgroundSize: 'cover',
         backgroundPosition: 'top',
+        textShadow: '0 1px 2px rgba(255, 255, 255, 0.8)',
       }}
     >
       <div className="max-w-7xl mx-auto px-4 py-4 sm:px-6 md:px-8 md:py-5">
@@ -129,7 +130,7 @@ export default function Navigation({ navItems, socialLinks = [] }: NavigationPro
                   <div key={item.href} className="relative group">
                     {item.isNavParentOnly ? (
                       <button
-                        className={`text-sm transition-all flex items-center gap-1 ${
+                        className={`text-sm font-medium transition-all flex items-center gap-1 ${
                           showAsActive
                             ? 'text-teal-dark font-black'
                             : 'text-teal-dark/70 hover:text-teal-dark hover:opacity-50'
@@ -141,7 +142,7 @@ export default function Navigation({ navItems, socialLinks = [] }: NavigationPro
                     ) : (
                       <Link
                         href={item.href}
-                        className={`text-sm transition-all flex items-center gap-1 ${
+                        className={`text-sm font-medium transition-all flex items-center gap-1 ${
                           showAsActive
                             ? 'text-teal-dark font-black'
                             : 'text-teal-dark/70 hover:text-teal-dark hover:opacity-50'
@@ -158,7 +159,7 @@ export default function Navigation({ navItems, socialLinks = [] }: NavigationPro
                           <Link
                             key={child.href}
                             href={child.href}
-                            className={`block px-4 py-2 text-sm transition-all ${
+                            className={`block px-4 py-2 text-sm font-medium transition-all ${
                               isActive(child.href)
                                 ? 'text-teal-dark font-bold underline'
                                 : 'text-teal-dark/70 hover:text-teal-dark hover:underline'
@@ -177,7 +178,7 @@ export default function Navigation({ navItems, socialLinks = [] }: NavigationPro
                 <Link
                   key={item.href}
                   href={item.href}
-                  className={`text-sm transition-all ${
+                  className={`text-sm font-medium transition-all ${
                     itemIsActive
                       ? 'text-teal-dark font-black'
                       : 'text-teal-dark/70 hover:text-teal-dark hover:opacity-50'
