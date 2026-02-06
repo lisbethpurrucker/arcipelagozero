@@ -385,30 +385,66 @@ export default function ContentBlock({ block }: ContentBlockProps) {
     return <CarouselBlock block={block} />
   }
 
-  // Embed Block (YouTube/Vimeo)
+  // Embed Block (Videos, Forms, Other)
   if (block._type === 'embedBlock') {
-    const embedUrl = block.url ? getEmbedUrl(block.url) : null
-    const aspectClasses: Record<string, string> = {
-      '16/9': 'aspect-video',
-      '4/3': 'aspect-[4/3]',
-      '1/1': 'aspect-square',
-      '9/16': 'aspect-[9/16] max-w-sm mx-auto',
+    const embedType = block.embedType || 'video'
+
+    // For videos, parse YouTube/Vimeo URLs
+    if (embedType === 'video') {
+      const embedUrl = block.url ? getEmbedUrl(block.url) : null
+      const aspectClasses: Record<string, string> = {
+        '16/9': 'aspect-video',
+        '4/3': 'aspect-[4/3]',
+        '1/1': 'aspect-square',
+        '9/16': 'aspect-[9/16] max-w-sm mx-auto',
+      }
+      const aspect = aspectClasses[block.aspectRatio] || aspectClasses['16/9']
+
+      return (
+        <div>
+          <div className={`${aspect} overflow-hidden bg-teal-dark`}>
+            {embedUrl ? (
+              <iframe
+                src={embedUrl}
+                className="w-full h-full"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+              />
+            ) : (
+              <div className="w-full h-full flex items-center justify-center">
+                <span className="text-white text-xs opacity-40 font-light">Invalid video URL</span>
+              </div>
+            )}
+          </div>
+          {block.caption && (
+            <p className="text-xs sm:text-sm mt-2 opacity-70 text-center text-teal-dark">{block.caption}</p>
+          )}
+        </div>
+      )
     }
-    const aspect = aspectClasses[block.aspectRatio] || aspectClasses['16/9']
+
+    // For forms and other embeds, use the URL directly
+    const heightClasses: Record<string, string> = {
+      small: 'h-[400px]',
+      medium: 'h-[600px]',
+      large: 'h-[800px]',
+      xlarge: 'h-[1000px]',
+    }
+    const height = heightClasses[block.height] || heightClasses.medium
 
     return (
       <div>
-        <div className={`${aspect} overflow-hidden bg-teal-dark`}>
-          {embedUrl ? (
+        <div className={`w-full ${height} overflow-hidden`}>
+          {block.url ? (
             <iframe
-              src={embedUrl}
-              className="w-full h-full"
+              src={block.url}
+              className="w-full h-full border-0"
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
               allowFullScreen
             />
           ) : (
-            <div className="w-full h-full flex items-center justify-center">
-              <span className="text-white text-xs opacity-40 font-light">Invalid video URL</span>
+            <div className="w-full h-full flex items-center justify-center bg-gray-100">
+              <span className="text-gray-400 text-xs font-light">No URL provided</span>
             </div>
           )}
         </div>
