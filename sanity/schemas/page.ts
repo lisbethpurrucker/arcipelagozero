@@ -2,7 +2,7 @@ import {defineField, defineType} from 'sanity'
 
 export default defineType({
   name: 'page',
-  title: 'Page',
+  title: 'Pages',
   type: 'document',
   description: 'Create and manage pages for your website. Each page can have its own content blocks and settings.',
   groups: [

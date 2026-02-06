@@ -12,6 +12,22 @@ const portableTextComponents: PortableTextComponents = {
       if (isEmpty) return <div className="h-3" />
       return <p className="mb-3 last:mb-0">{children}</p>
     },
+    // Fallbacks for old content with per-paragraph styles
+    small: ({ children, value }) => {
+      const isEmpty = !value?.children?.some((child: any) => child.text?.trim())
+      if (isEmpty) return <div className="h-3" />
+      return <p className="mb-3 last:mb-0">{children}</p>
+    },
+    large: ({ children, value }) => {
+      const isEmpty = !value?.children?.some((child: any) => child.text?.trim())
+      if (isEmpty) return <div className="h-3" />
+      return <p className="mb-3 last:mb-0">{children}</p>
+    },
+    xlarge: ({ children, value }) => {
+      const isEmpty = !value?.children?.some((child: any) => child.text?.trim())
+      if (isEmpty) return <div className="h-3" />
+      return <p className="mb-3 last:mb-0">{children}</p>
+    },
   },
   marks: {
     link: ({ children, value }) => (
@@ -244,20 +260,19 @@ export default function ContentBlock({ block }: ContentBlockProps) {
   // Text Block
   if (block._type === 'textBlock') {
     const isHero = block.variant === 'hero'
-    const fontSizeClasses: Record<string, string> = {
-      caption: 'text-xs',
-      body: 'text-base',
-      lead: 'text-lg',
-      subheading: 'text-xl',
-      heading: 'text-2xl',
-    }
     const textAlignClasses: Record<string, string> = {
       left: 'text-left',
       center: 'text-center',
       right: 'text-right',
     }
-    const fontSize = !isHero ? (fontSizeClasses[block.fontSize] || fontSizeClasses.body) : ''
+    const fontSizeClasses: Record<string, string> = {
+      small: 'text-sm',
+      normal: 'text-base',
+      large: 'text-lg',
+      xlarge: 'text-xl',
+    }
     const textAlign = textAlignClasses[block.textAlign] || textAlignClasses.left
+    const fontSize = fontSizeClasses[block.fontSize] || fontSizeClasses.normal
 
     return (
       <div className={`bg-white text-teal-dark ${textAlign} ${isHero ? 'relative -ml-4 sm:-ml-6 md:-ml-8 lg:-ml-12 pr-0 pl-2 sm:pl-3 py-4 sm:py-6 md:py-8 lg:py-10' : 'p-4 sm:p-6 md:p-8 lg:p-10'}`}>
@@ -266,7 +281,7 @@ export default function ContentBlock({ block }: ContentBlockProps) {
             {block.title}
           </h3>
         )}
-        <div className={`prose max-w-none leading-relaxed ${isHero ? 'text-lg sm:text-xl md:text-2xl font-medium' : `${fontSize} font-light`}`}>
+        <div className={`max-w-none leading-relaxed ${isHero ? 'text-lg sm:text-xl md:text-2xl font-medium' : `${fontSize} font-light`}`}>
           {block.text && <PortableText value={block.text} components={portableTextComponents} />}
         </div>
         {block.callToAction?.text && (

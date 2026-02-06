@@ -1,4 +1,5 @@
 import {defineField, defineType} from 'sanity'
+import {AlignmentInput, FontSizeInput} from '../components'
 
 export default defineType({
   name: 'textBlock',
@@ -20,47 +21,35 @@ export default defineType({
       initialValue: 'normal',
     }),
     defineField({
-      name: 'fontSize',
-      title: 'Text Size',
-      type: 'string',
-      description: 'Choose the size of the text. "Body" is the standard reading size for most content.',
-      options: {
-        list: [
-          {title: 'Caption (12px)', value: 'caption'},
-          {title: 'Body (16px)', value: 'body'},
-          {title: 'Lead (18px)', value: 'lead'},
-          {title: 'Subheading (20px)', value: 'subheading'},
-          {title: 'Heading (24px)', value: 'heading'},
-        ],
-      },
-      initialValue: 'body',
-      hidden: ({parent}) => parent?.variant === 'hero',
-    }),
-    defineField({
-      name: 'textAlign',
-      title: 'Text Alignment',
-      type: 'string',
-      description: 'Choose how the text is aligned within the block.',
-      options: {
-        list: [
-          {title: 'Left', value: 'left'},
-          {title: 'Center', value: 'center'},
-          {title: 'Right', value: 'right'},
-        ],
-      },
-      initialValue: 'left',
-    }),
-    defineField({
       name: 'title',
       title: 'Heading',
       type: 'string',
       description: 'Optional heading that appears above the text in bold, uppercase letters.',
     }),
     defineField({
+      name: 'fontSize',
+      title: 'Size',
+      type: 'string',
+      components: {
+        input: FontSizeInput,
+      },
+      initialValue: 'normal',
+      hidden: ({parent}) => parent?.variant === 'hero',
+    }),
+    defineField({
+      name: 'textAlign',
+      title: 'Alignment',
+      type: 'string',
+      components: {
+        input: AlignmentInput,
+      },
+      initialValue: 'left',
+      hidden: ({parent}) => parent?.variant === 'hero',
+    }),
+    defineField({
       name: 'text',
       title: 'Text Content',
       type: 'array',
-      description: 'Your main content. Use the toolbar to make text bold, italic, or add links. Press Enter twice to create a gap between paragraphs.',
       of: [
         {
           type: 'block',
