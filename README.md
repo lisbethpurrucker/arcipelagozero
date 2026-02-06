@@ -261,8 +261,8 @@ Edit `tailwind.config.ts`:
 
 ```typescript
 colors: {
-  'teal-dark': '#4A5F5E',  // Change this
-  'cream': '#E8E5D5',       // And this
+  'teal-dark': '#4A5F5E',
+  'cream': '#E8E5D5',
 }
 ```
 
