@@ -77,6 +77,20 @@ export default defineType({
       initialValue: 'right',
     }),
     defineField({
+      name: 'backgroundColor',
+      title: 'Text Background Color',
+      type: 'string',
+      description: 'Choose a background color for the text area.',
+      options: {
+        list: [
+          {title: 'White', value: 'white'},
+          {title: 'Sand', value: 'sand'},
+          {title: 'Mint', value: 'mint'},
+        ],
+      },
+      initialValue: 'white',
+    }),
+    defineField({
       name: 'callToAction',
       title: 'Link Button',
       type: 'object',

@@ -458,6 +458,12 @@ export default function ContentBlock({ block }: ContentBlockProps) {
   // Mixed Block
   if (block._type === 'mixedBlock') {
     const imageLeft = block.imagePosition === 'left'
+    const bgClasses: Record<string, string> = {
+      white: 'bg-white',
+      sand: 'bg-sand',
+      mint: 'bg-mint',
+    }
+    const bgClass = bgClasses[block.backgroundColor] || bgClasses.white
 
     const imageEl = block.image && (
       <div className="relative overflow-hidden min-h-[200px]">
@@ -471,7 +477,7 @@ export default function ContentBlock({ block }: ContentBlockProps) {
     )
 
     const textEl = (
-      <div className="flex items-start bg-white text-teal-dark py-2">
+      <div className={`flex items-start ${bgClass} text-teal-dark py-2 p-6 sm:p-8 md:p-10`}>
         <div>
           {block.title && (
             <h3 className="text-xs sm:text-sm font-bold uppercase tracking-wider text-teal-dark mb-3 sm:mb-4">
