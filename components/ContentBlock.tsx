@@ -477,7 +477,7 @@ export default function ContentBlock({ block }: ContentBlockProps) {
     )
 
     const textEl = (
-      <div className={`flex items-start ${bgClass} text-teal-dark py-2 p-6 sm:p-8 md:p-10`}>
+      <div className={`flex items-start ${bgClass} text-teal-dark p-6 pt-8 sm:p-8 md:p-10`}>
         <div>
           {block.title && (
             <h3 className="text-xs sm:text-sm font-bold uppercase tracking-wider text-teal-dark mb-3 sm:mb-4">
@@ -502,7 +502,7 @@ export default function ContentBlock({ block }: ContentBlockProps) {
     )
 
     return (
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2">
         {imageLeft ? <>{imageEl}{textEl}</> : <>{textEl}{imageEl}</>}
       </div>
     )
