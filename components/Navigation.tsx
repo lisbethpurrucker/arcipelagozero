@@ -17,6 +17,8 @@ import {
   Menu,
   X,
   ChevronDown,
+  ArrowLeft,
+  ArrowRight,
   type LucideIcon
 } from 'lucide-react'
 import { useState } from 'react'
@@ -73,7 +75,7 @@ export default function Navigation({ navItems, socialLinks = [] }: NavigationPro
   const items = navItems && navItems.length > 0 ? navItems : defaultNavItems
   const pathname = usePathname()
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
-  const [expandedMobileItems, setExpandedMobileItems] = useState<Set<string>>(new Set())
+  const [mobileSubMenu, setMobileSubMenu] = useState<NavItem | null>(null)
 
   const isActive = (href: string) => pathname === href
   const isChildActive = (item: NavItem) => {
@@ -81,32 +83,17 @@ export default function Navigation({ navItems, socialLinks = [] }: NavigationPro
     return item.children.some(child => pathname === child.href)
   }
 
-  const toggleMobileExpand = (href: string) => {
-    setExpandedMobileItems(prev => {
-      const next = new Set(prev)
-      if (next.has(href)) {
-        next.delete(href)
-      } else {
-        next.add(href)
-      }
-      return next
-    })
+  const closeMobileMenu = () => {
+    setMobileMenuOpen(false)
+    setMobileSubMenu(null)
   }
 
   return (
-    <nav
-      className="fixed top-0 left-0 right-0 z-50"
-      style={{
-        backgroundImage: 'url(/images/pattern-lines-sand.png)',
-        backgroundSize: 'cover',
-        backgroundPosition: 'top',
-        textShadow: '0 1px 2px rgba(255, 255, 255, 0.8)',
-      }}
-    >
+    <nav className="fixed top-0 left-0 right-0 z-50 bg-[url('/images/pattern-lines-sand.png')] bg-[length:300%_auto] bg-[position:center_top] md:bg-cover md:bg-top">
       <div className="max-w-7xl mx-auto px-4 py-4 sm:px-6 md:px-8 md:py-5">
         <div className="flex items-center justify-between">
           {/* Logo on the left */}
-          <Link href="/" className="block -ml-3 sm:ml-0" onClick={() => setMobileMenuOpen(false)}>
+          <Link href="/" className="block -ml-3 sm:ml-0" onClick={closeMobileMenu}>
             <Image
               src="/images/logo/logo.svg"
               alt="Arcipelago Zero"
@@ -130,39 +117,39 @@ export default function Navigation({ navItems, socialLinks = [] }: NavigationPro
                   <div key={item.href} className="relative group">
                     {item.isNavParentOnly ? (
                       <button
-                        className={`text-sm font-medium transition-all flex items-center gap-1 ${
+                        className={`text-base font-semibold transition-all flex items-center gap-1 [text-shadow:_0_1px_2px_rgba(255,255,255,0.6)] ${
                           showAsActive
                             ? 'text-teal-dark font-black'
                             : 'text-teal-dark/70 hover:text-teal-dark hover:opacity-50'
                         }`}
                       >
                         {item.label}
-                        <ChevronDown size={14} className="transition-transform group-hover:rotate-180" />
+                        <ChevronDown size={16} className="transition-transform group-hover:rotate-180" />
                       </button>
                     ) : (
                       <Link
                         href={item.href}
-                        className={`text-sm font-medium transition-all flex items-center gap-1 ${
+                        className={`text-base font-semibold transition-all flex items-center gap-1 [text-shadow:_0_1px_2px_rgba(255,255,255,0.6)] ${
                           showAsActive
                             ? 'text-teal-dark font-black'
                             : 'text-teal-dark/70 hover:text-teal-dark hover:opacity-50'
                         }`}
                       >
                         {item.label}
-                        <ChevronDown size={14} className="transition-transform group-hover:rotate-180" />
+                        <ChevronDown size={16} className="transition-transform group-hover:rotate-180" />
                       </Link>
                     )}
                     {/* Dropdown */}
-                    <div className="absolute top-full left-0 pt-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all">
-                      <div className="bg-white rounded-sm shadow-lg border border-gray-100 py-2 min-w-[160px]">
+                    <div className="absolute top-full left-0 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all">
+                      <div className="bg-[#f5f0e8]/90 backdrop-blur-sm shadow-sm py-2 min-w-[160px]">
                         {item.children!.map((child) => (
                           <Link
                             key={child.href}
                             href={child.href}
                             className={`block px-4 py-2 text-sm font-medium transition-all ${
                               isActive(child.href)
-                                ? 'text-teal-dark font-bold underline'
-                                : 'text-teal-dark/70 hover:text-teal-dark hover:underline'
+                                ? 'text-teal-dark font-bold'
+                                : 'text-teal-dark/70 hover:text-teal-dark hover:bg-[#f5f0e8]'
                             }`}
                           >
                             {child.label}
@@ -178,7 +165,7 @@ export default function Navigation({ navItems, socialLinks = [] }: NavigationPro
                 <Link
                   key={item.href}
                   href={item.href}
-                  className={`text-sm font-medium transition-all ${
+                  className={`text-base font-semibold transition-all [text-shadow:_0_1px_2px_rgba(255,255,255,0.6)] ${
                     itemIsActive
                       ? 'text-teal-dark font-black'
                       : 'text-teal-dark/70 hover:text-teal-dark hover:opacity-50'
@@ -218,110 +205,95 @@ export default function Navigation({ navItems, socialLinks = [] }: NavigationPro
 
         {/* Mobile Menu */}
         {mobileMenuOpen && (
-          <div className="md:hidden mt-4 pt-4 border-t border-gray-100">
-            <div className="flex flex-col space-y-1">
-              {items.map((item) => {
-                const hasChildren = item.children && item.children.length > 0
-                const itemIsActive = isActive(item.href)
-                const childIsActive = isChildActive(item)
-                const showAsActive = itemIsActive || childIsActive
-                const isExpanded = expandedMobileItems.has(item.href)
+          <div className="md:hidden absolute left-0 right-0 top-full -mt-2 z-40 overflow-y-auto bg-white max-h-[calc(100dvh-100%)]">
+            {mobileSubMenu ? (
+              /* Sub-menu view */
+              <div className="flex flex-col">
+                <button
+                  onClick={() => setMobileSubMenu(null)}
+                  className="flex items-center gap-2 w-full text-left text-base py-3 px-4 font-bold text-teal-dark bg-[#f5f0e8]"
+                >
+                  <ArrowLeft size={18} />
+                  {mobileSubMenu.label}
+                </button>
+                <div className="flex flex-col px-4 py-2">
+                  {mobileSubMenu.children!.map((child) => (
+                    <Link
+                      key={child.href}
+                      href={child.href}
+                      onClick={closeMobileMenu}
+                      className={`block text-base py-3 px-2 transition-all ${
+                        isActive(child.href)
+                          ? 'text-gray-900 font-bold'
+                          : 'text-teal-dark/70 hover:text-teal-dark'
+                      }`}
+                    >
+                      {child.label}
+                    </Link>
+                  ))}
+                </div>
+              </div>
+            ) : (
+              /* Main menu view */
+              <div className="flex flex-col px-4 py-6">
+                {items.map((item) => {
+                  const hasChildren = item.children && item.children.length > 0
+                  const itemIsActive = isActive(item.href)
+                  const childIsActive = isChildActive(item)
+                  const showAsActive = itemIsActive || childIsActive
 
-                if (hasChildren) {
+                  if (hasChildren) {
+                    return (
+                      <button
+                        key={item.href}
+                        onClick={() => setMobileSubMenu(item)}
+                        className={`flex items-center justify-between text-base py-3 px-2 transition-all ${
+                          showAsActive
+                            ? 'text-teal-dark font-bold'
+                            : 'text-teal-dark/70 hover:text-teal-dark'
+                        }`}
+                      >
+                        {item.label}
+                        <ArrowRight size={18} />
+                      </button>
+                    )
+                  }
+
                   return (
-                    <div key={item.href}>
-                      <div className="flex items-center">
-                        {item.isNavParentOnly ? (
-                          <button
-                            onClick={() => toggleMobileExpand(item.href)}
-                            className={`flex-1 text-left text-base py-2 px-2 transition-all ${
-                              showAsActive
-                                ? 'text-teal-dark font-bold'
-                                : 'text-teal-dark/70 hover:text-teal-dark'
-                            }`}
-                          >
-                            {item.label}
-                          </button>
-                        ) : (
-                          <Link
-                            href={item.href}
-                            onClick={() => setMobileMenuOpen(false)}
-                            className={`flex-1 text-base py-2 px-2 transition-all hover:underline hover:underline-offset-4 active:underline active:underline-offset-4 ${
-                              showAsActive
-                                ? 'text-teal-dark font-bold'
-                                : 'text-teal-dark/70 hover:text-teal-dark'
-                            }`}
-                          >
-                            {item.label}
-                          </Link>
-                        )}
-                        <button
-                          onClick={() => toggleMobileExpand(item.href)}
-                          className="p-2 text-teal-dark/70 hover:text-teal-dark"
-                          aria-label={isExpanded ? 'Collapse' : 'Expand'}
-                        >
-                          <ChevronDown
-                            size={18}
-                            className={`transition-transform ${isExpanded ? 'rotate-180' : ''}`}
-                          />
-                        </button>
-                      </div>
-                      {isExpanded && (
-                        <div className="pl-4 space-y-1">
-                          {item.children!.map((child) => (
-                            <Link
-                              key={child.href}
-                              href={child.href}
-                              onClick={() => setMobileMenuOpen(false)}
-                              className={`block text-base py-2 px-2 transition-all hover:underline hover:underline-offset-4 ${
-                                isActive(child.href)
-                                  ? 'text-teal-dark font-bold'
-                                  : 'text-teal-dark/70 hover:text-teal-dark'
-                              }`}
-                            >
-                              {child.label}
-                            </Link>
-                          ))}
-                        </div>
-                      )}
-                    </div>
+                    <Link
+                      key={item.href}
+                      href={item.href}
+                      onClick={closeMobileMenu}
+                      className={`text-base py-3 px-2 transition-all ${
+                        itemIsActive
+                          ? 'text-teal-dark font-bold bg-[#f5f0e8] -mx-4 px-6'
+                          : 'text-teal-dark/70 hover:text-teal-dark'
+                      }`}
+                    >
+                      {item.label}
+                    </Link>
                   )
-                }
-
-                return (
-                  <Link
-                    key={item.href}
-                    href={item.href}
-                    onClick={() => setMobileMenuOpen(false)}
-                    className={`text-base py-2 px-2 transition-all hover:underline hover:underline-offset-4 active:underline active:underline-offset-4 ${
-                      itemIsActive
-                        ? 'text-teal-dark font-bold'
-                        : 'text-teal-dark/70 hover:text-teal-dark'
-                    }`}
-                  >
-                    {item.label}
-                  </Link>
-                )
-              })}
-              {socialLinks.map((link) => {
-                const Icon = platformIcons[link.platform]
-                const label = platformLabels[link.platform] || link.platform
-                if (!Icon) return null
-                return (
-                  <a
-                    key={link.platform}
-                    href={link.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    onClick={() => setMobileMenuOpen(false)}
-                    className="text-teal-dark/70 hover:text-teal-dark transition-colors py-2 px-2 flex items-center gap-2"
-                  >
-                    <Icon size={18} strokeWidth={1.5} />
-                    <span className="text-base">{label}</span>
-                  </a>
-                )
-              })}
-            </div>
+                })}
+                {socialLinks.map((link) => {
+                  const Icon = platformIcons[link.platform]
+                  const label = platformLabels[link.platform] || link.platform
+                  if (!Icon) return null
+                  return (
+                    <a
+                      key={link.platform}
+                      href={link.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      onClick={closeMobileMenu}
+                      className="text-teal-dark/70 hover:text-teal-dark transition-colors py-3 px-2 flex items-center gap-2"
+                    >
+                      <Icon size={18} strokeWidth={1.5} />
+                      <span className="text-base">{label}</span>
+                    </a>
+                  )
+                })}
+              </div>
+            )}
           </div>
         )}
       </div>
