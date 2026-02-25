@@ -1,4 +1,5 @@
 import {defineField, defineType} from 'sanity'
+import {FontSizeInput} from '../components'
 
 export default defineType({
   name: 'quoteBlock',
@@ -40,6 +41,15 @@ export default defineType({
           },
         },
       ],
+    }),
+    defineField({
+      name: 'fontSize',
+      title: 'Text Size',
+      type: 'string',
+      components: {
+        input: FontSizeInput,
+      },
+      initialValue: 'large',
     }),
     defineField({
       name: 'author',

@@ -2,6 +2,7 @@ import {defineConfig} from 'sanity'
 import {structureTool} from 'sanity/structure'
 import {visionTool} from '@sanity/vision'
 import {schemaTypes} from './schemas'
+import {DuplicatePageAction} from './actions/DuplicatePageAction'
 
 export default defineConfig({
   name: 'default',
@@ -14,5 +15,14 @@ export default defineConfig({
 
   schema: {
     types: schemaTypes,
+  },
+
+  document: {
+    actions: (prev, context) => {
+      if (context.schemaType === 'page') {
+        return [...prev, DuplicatePageAction]
+      }
+      return prev
+    },
   },
 })

@@ -1,4 +1,5 @@
 import {defineField, defineType} from 'sanity'
+import {AlignmentInput, FontSizeInput} from '../components'
 
 export default defineType({
   name: 'mixedBlock',
@@ -64,6 +65,22 @@ export default defineType({
       ],
     }),
     defineField({
+      name: 'imageAspectRatio',
+      title: 'Image Aspect Ratio',
+      type: 'string',
+      description: 'Controls the proportions of the image. The text will always be vertically centred next to it.',
+      options: {
+        list: [
+          {title: 'Landscape Wide (16:9)', value: '16/9'},
+          {title: 'Landscape (3:2)', value: '3/2'},
+          {title: 'Standard (4:3)', value: '4/3'},
+          {title: 'Square (1:1)', value: '1/1'},
+          {title: 'Portrait (3:4)', value: '3/4'},
+        ],
+      },
+      initialValue: '4/3',
+    }),
+    defineField({
       name: 'imagePosition',
       title: 'Image Position',
       type: 'string',
@@ -89,6 +106,24 @@ export default defineType({
         ],
       },
       initialValue: 'white',
+    }),
+    defineField({
+      name: 'fontSize',
+      title: 'Text Size',
+      type: 'string',
+      components: {
+        input: FontSizeInput,
+      },
+      initialValue: 'normal',
+    }),
+    defineField({
+      name: 'textAlign',
+      title: 'Text Alignment',
+      type: 'string',
+      components: {
+        input: AlignmentInput,
+      },
+      initialValue: 'left',
     }),
     defineField({
       name: 'callToAction',

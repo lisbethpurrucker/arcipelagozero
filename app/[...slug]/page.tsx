@@ -54,7 +54,7 @@ export default async function DynamicPage({ params }: PageProps) {
   return (
     <div>
       {/* Header Image */}
-      {page.headerImage && (
+      {page.headerImage?.asset && (
         <div className="relative left-1/2 right-1/2 -ml-[50vw] -mr-[50vw] w-screen -mt-6 sm:-mt-8 md:-mt-10 lg:-mt-12 mb-6 sm:mb-8 md:mb-10 h-[25vh] sm:h-[30vh] md:h-[35vh] overflow-hidden">
           <Image
             src={urlFor(page.headerImage).width(1440).fit('crop').url()}

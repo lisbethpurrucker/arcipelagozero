@@ -1,4 +1,5 @@
 import {defineField, defineType} from 'sanity'
+import {FontSizeInput} from '../components'
 
 export default defineType({
   name: 'ctaBlock',
@@ -44,6 +45,16 @@ export default defineType({
           },
         },
       ],
+    }),
+    defineField({
+      name: 'fontSize',
+      title: 'Text Size',
+      type: 'string',
+      description: 'Size of the supporting text (not the heading or button).',
+      components: {
+        input: FontSizeInput,
+      },
+      initialValue: 'normal',
     }),
     defineField({
       name: 'buttonText',

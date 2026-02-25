@@ -266,10 +266,10 @@ export default function ContentBlock({ block }: ContentBlockProps) {
       right: 'text-right',
     }
     const fontSizeClasses: Record<string, string> = {
-      small: 'text-sm',
-      normal: 'text-base',
-      large: 'text-lg',
-      xlarge: 'text-xl',
+      small: 'text-base',
+      normal: 'text-lg',
+      large: 'text-xl',
+      xlarge: 'text-2xl',
     }
     const textAlign = textAlignClasses[block.textAlign] || textAlignClasses.left
     const fontSize = fontSizeClasses[block.fontSize] || fontSizeClasses.normal
@@ -460,44 +460,67 @@ export default function ContentBlock({ block }: ContentBlockProps) {
     const imageLeft = block.imagePosition === 'left'
     const bgClasses: Record<string, string> = {
       white: 'bg-white',
-      sand: 'bg-sand',
-      mint: 'bg-mint',
+      sand: 'bg-sand/60',
+      mint: 'bg-mint/60',
     }
     const bgClass = bgClasses[block.backgroundColor] || bgClasses.white
 
+    const aspectClasses: Record<string, string> = {
+      '16/9': 'aspect-video',
+      '3/2': 'aspect-[3/2]',
+      '4/3': 'aspect-[4/3]',
+      '1/1': 'aspect-square',
+      '3/4': 'aspect-[3/4]',
+    }
+    const aspectClass = aspectClasses[block.imageAspectRatio] || 'aspect-[4/3]'
+
+    const fontSizeClasses: Record<string, string> = {
+      small: 'text-base',
+      normal: 'text-lg',
+      large: 'text-xl',
+      xlarge: 'text-2xl',
+    }
+    const textAlignClasses: Record<string, string> = {
+      left: 'text-left',
+      center: 'text-center',
+      right: 'text-right',
+    }
+    const mixedFontSize = fontSizeClasses[block.fontSize] || 'text-base'
+    const mixedTextAlign = textAlignClasses[block.textAlign] || 'text-left'
+
     const imageEl = block.image && (
-      <div className="relative overflow-hidden min-h-[200px]">
-        <Image
-          src={urlFor(block.image).width(800).fit('crop').url()}
-          alt={block.image.alt || ''}
-          fill
-          className="object-cover object-center"
-        />
+      <div className="flex items-center justify-center md:h-full">
+        <div className={`relative overflow-hidden ${aspectClass} w-full`}>
+          <Image
+            src={urlFor(block.image).width(800).fit('crop').url()}
+            alt={block.image.alt || ''}
+            fill
+            className="object-cover object-center"
+          />
+        </div>
       </div>
     )
 
     const textEl = (
-      <div className={`flex items-start ${bgClass} text-teal-dark p-6 pt-8 sm:p-8 md:p-10`}>
-        <div>
-          {block.title && (
-            <h3 className="text-xs sm:text-sm font-bold uppercase tracking-wider text-teal-dark mb-3 sm:mb-4">
-              {block.title}
-            </h3>
-          )}
-          {block.text && (
-            <div className="text-sm sm:text-base md:text-lg leading-relaxed font-light">
-              <PortableText value={block.text} components={portableTextComponents} />
-            </div>
-          )}
-          {block.callToAction?.text && (
-            <a
-              href={block.callToAction.url || '#'}
-              className="text-sm sm:text-base font-medium text-teal-dark underline hover:no-underline inline-block mt-4"
-            >
-              {block.callToAction.text}
-            </a>
-          )}
-        </div>
+      <div className={`flex flex-col justify-center h-full ${bgClass} text-teal-dark p-6 sm:p-8 md:p-10 ${mixedTextAlign}`}>
+        {block.title && (
+          <h3 className="text-xs sm:text-sm font-bold uppercase tracking-wider text-teal-dark mb-3 sm:mb-4">
+            {block.title}
+          </h3>
+        )}
+        {block.text && (
+          <div className={`leading-relaxed font-light ${mixedFontSize}`}>
+            <PortableText value={block.text} components={portableTextComponents} />
+          </div>
+        )}
+        {block.callToAction?.text && (
+          <a
+            href={block.callToAction.url || '#'}
+            className="text-sm sm:text-base font-medium text-teal-dark underline hover:no-underline inline-block mt-4"
+          >
+            {block.callToAction.text}
+          </a>
+        )}
       </div>
     )
 
@@ -510,10 +533,18 @@ export default function ContentBlock({ block }: ContentBlockProps) {
 
   // Quote Block
   if (block._type === 'quoteBlock') {
+    const quoteSizeClasses: Record<string, string> = {
+      small: 'text-base sm:text-lg',
+      normal: 'text-lg sm:text-xl md:text-2xl',
+      large: 'text-xl sm:text-2xl md:text-3xl',
+      xlarge: 'text-2xl sm:text-3xl md:text-4xl',
+    }
+    const quoteSize = quoteSizeClasses[block.fontSize] || quoteSizeClasses.large
+
     return (
       <div className="p-6 sm:p-8 md:p-10 lg:p-12 bg-white text-teal-dark">
         <blockquote className="text-center">
-          <div className="text-lg sm:text-xl md:text-2xl lg:text-3xl leading-relaxed font-light italic mb-4 sm:mb-6">
+          <div className={`${quoteSize} leading-relaxed font-light italic mb-4 sm:mb-6`}>
             {block.quote && <PortableText value={block.quote} components={portableTextComponents} />}
           </div>
           {(block.author || block.role) && (
@@ -530,6 +561,12 @@ export default function ContentBlock({ block }: ContentBlockProps) {
 
   // CTA Block
   if (block._type === 'ctaBlock') {
+    const fontSizeClasses: Record<string, string> = {
+      small: 'text-base',
+      normal: 'text-lg',
+      large: 'text-xl',
+      xlarge: 'text-2xl',
+    }
     const alignClasses: Record<string, string> = {
       left: 'text-left',
       center: 'text-center',
@@ -552,7 +589,7 @@ export default function ContentBlock({ block }: ContentBlockProps) {
           </h3>
         )}
         {block.text && (
-          <div className="text-sm sm:text-base md:text-lg leading-relaxed font-light mb-4 sm:mb-6 max-w-2xl mx-auto">
+          <div className={`${fontSizeClasses[block.fontSize] || 'text-base'} leading-relaxed font-light mb-4 sm:mb-6 max-w-2xl mx-auto`}>
             <PortableText value={block.text} components={portableTextComponents} />
           </div>
         )}

@@ -7,6 +7,12 @@ export default defineType({
   description: 'Global settings for your website, including social media links.',
   fields: [
     defineField({
+      name: 'siteTitle',
+      title: 'Site Title',
+      type: 'string',
+      description: 'The title shown in browser tabs and Google search results (e.g. "Arcipelago Zero | Art Residency").',
+    }),
+    defineField({
       name: 'socialLinks',
       title: 'Social Media Links',
       type: 'array',

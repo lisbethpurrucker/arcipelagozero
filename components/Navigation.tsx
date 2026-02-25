@@ -21,7 +21,7 @@ import {
   ArrowRight,
   type LucideIcon
 } from 'lucide-react'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 
 interface NavItem {
   label: string
@@ -77,6 +77,11 @@ export default function Navigation({ navItems, socialLinks = [] }: NavigationPro
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [mobileSubMenu, setMobileSubMenu] = useState<NavItem | null>(null)
 
+  useEffect(() => {
+    document.body.style.overflow = mobileMenuOpen ? 'hidden' : ''
+    return () => { document.body.style.overflow = '' }
+  }, [mobileMenuOpen])
+
   const isActive = (href: string) => pathname === href
   const isChildActive = (item: NavItem) => {
     if (!item.children) return false
@@ -89,9 +94,9 @@ export default function Navigation({ navItems, socialLinks = [] }: NavigationPro
   }
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 bg-[url('/images/pattern-lines-sand.png')] bg-[length:300%_auto] bg-[position:center_top] md:bg-cover md:bg-top">
-      <div className="max-w-7xl mx-auto px-4 py-4 sm:px-6 md:px-8 md:py-5">
-        <div className="flex items-center justify-between">
+    <nav className="fixed top-0 left-0 right-0 z-50 bg-white">
+      <div className="relative bg-[url('/images/pattern-lines-sand.png')] bg-no-repeat bg-[length:300%_auto] bg-[position:center_top] md:bg-[length:100%_auto] md:bg-top">
+      <div className="max-w-7xl mx-auto px-4 h-20 sm:px-6 sm:h-14 md:px-8 md:h-16 flex items-center justify-between">
           {/* Logo on the left */}
           <Link href="/" className="block -ml-3 sm:ml-0" onClick={closeMobileMenu}>
             <Image
@@ -99,13 +104,13 @@ export default function Navigation({ navItems, socialLinks = [] }: NavigationPro
               alt="Arcipelago Zero"
               width={200}
               height={50}
-              className="h-12 sm:h-14 md:h-16 -my-1 sm:-my-2 md:-my-3 w-auto"
+              className="h-12 sm:h-14 md:h-16 w-auto"
               priority
             />
           </Link>
 
           {/* Desktop Navigation links on the right */}
-          <div className="hidden md:flex items-center gap-6 lg:gap-8">
+          <div className="hidden md:flex items-center gap-8 lg:gap-12">
             {items.map((item) => {
               const hasChildren = item.children && item.children.length > 0
               const itemIsActive = isActive(item.href)
@@ -117,39 +122,39 @@ export default function Navigation({ navItems, socialLinks = [] }: NavigationPro
                   <div key={item.href} className="relative group">
                     {item.isNavParentOnly ? (
                       <button
-                        className={`text-base font-semibold transition-all flex items-center gap-1 [text-shadow:_0_1px_2px_rgba(255,255,255,0.6)] ${
+                        className={`text-base font-medium transition-all flex items-center gap-1 text-teal-dark ${
                           showAsActive
-                            ? 'text-teal-dark font-black'
-                            : 'text-teal-dark/70 hover:text-teal-dark hover:opacity-50'
+                            ? 'underline underline-offset-4 decoration-1 hover:decoration-2'
+                            : 'hover:underline hover:underline-offset-4 hover:decoration-1'
                         }`}
                       >
                         {item.label}
-                        <ChevronDown size={16} className="transition-transform group-hover:rotate-180" />
+                        <ChevronDown size={14} className="transition-transform group-hover:rotate-180" />
                       </button>
                     ) : (
                       <Link
                         href={item.href}
-                        className={`text-base font-semibold transition-all flex items-center gap-1 [text-shadow:_0_1px_2px_rgba(255,255,255,0.6)] ${
+                        className={`text-base font-medium transition-all flex items-center gap-1 text-teal-dark ${
                           showAsActive
-                            ? 'text-teal-dark font-black'
-                            : 'text-teal-dark/70 hover:text-teal-dark hover:opacity-50'
+                            ? 'underline underline-offset-4 decoration-1 hover:decoration-2'
+                            : 'hover:underline hover:underline-offset-4 hover:decoration-1'
                         }`}
                       >
                         {item.label}
-                        <ChevronDown size={16} className="transition-transform group-hover:rotate-180" />
+                        <ChevronDown size={14} className="transition-transform group-hover:rotate-180" />
                       </Link>
                     )}
                     {/* Dropdown */}
-                    <div className="absolute top-full left-0 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all">
-                      <div className="bg-[#f5f0e8]/90 backdrop-blur-sm shadow-sm py-2 min-w-[160px]">
+                    <div className="absolute top-full left-0 pt-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all">
+                      <div className="bg-white rounded-md shadow-sm py-2 min-w-[160px]">
                         {item.children!.map((child) => (
                           <Link
                             key={child.href}
                             href={child.href}
-                            className={`block px-4 py-2 text-sm font-medium transition-all ${
+                            className={`block px-4 py-2 text-base font-medium transition-all text-teal-dark ${
                               isActive(child.href)
-                                ? 'text-teal-dark font-bold'
-                                : 'text-teal-dark/70 hover:text-teal-dark hover:bg-[#f5f0e8]'
+                                ? 'underline underline-offset-4 decoration-1 hover:decoration-2'
+                                : 'hover:underline hover:underline-offset-4 hover:decoration-1'
                             }`}
                           >
                             {child.label}
@@ -165,10 +170,10 @@ export default function Navigation({ navItems, socialLinks = [] }: NavigationPro
                 <Link
                   key={item.href}
                   href={item.href}
-                  className={`text-base font-semibold transition-all [text-shadow:_0_1px_2px_rgba(255,255,255,0.6)] ${
+                  className={`text-base font-medium transition-all text-teal-dark ${
                     itemIsActive
-                      ? 'text-teal-dark font-black'
-                      : 'text-teal-dark/70 hover:text-teal-dark hover:opacity-50'
+                      ? 'underline underline-offset-4 decoration-1 hover:decoration-2'
+                      : 'hover:underline hover:underline-offset-4 hover:decoration-1'
                   }`}
                 >
                   {item.label}
@@ -201,11 +206,9 @@ export default function Navigation({ navItems, socialLinks = [] }: NavigationPro
           >
             {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
           </button>
-        </div>
-
         {/* Mobile Menu */}
         {mobileMenuOpen && (
-          <div className="md:hidden absolute left-0 right-0 top-full -mt-2 z-40 overflow-y-auto bg-white max-h-[calc(100dvh-100%)]">
+          <div className="md:hidden absolute left-0 right-0 top-full -mt-2 z-40 overflow-y-auto bg-white min-h-[calc(100dvh-100%)]">
             {mobileSubMenu ? (
               /* Sub-menu view */
               <div className="flex flex-col">
@@ -296,6 +299,7 @@ export default function Navigation({ navItems, socialLinks = [] }: NavigationPro
             )}
           </div>
         )}
+      </div>
       </div>
     </nav>
   )
