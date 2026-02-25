@@ -25,7 +25,7 @@ export default function RootLayout({
     <html lang="en">
       <body className="flex flex-col min-h-screen">
         <NavigationWrapper />
-        <main className="flex-grow pt-20 sm:pt-14 md:pt-16">
+        <main className="flex-grow pt-20 sm:pt-14 md:pt-20">
           <div className="max-w-5xl mx-auto px-4 py-6 sm:px-6 sm:py-8 md:px-8 md:py-10 lg:px-12 lg:py-12">
             {children}
           </div>
