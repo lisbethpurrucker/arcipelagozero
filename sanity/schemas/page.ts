@@ -59,6 +59,24 @@ export default defineType({
       hidden: ({document}) => document?.isNavParentOnly === true,
     }),
     defineField({
+      name: 'headerImageHeight',
+      title: 'Banner Height',
+      type: 'string',
+      description: 'How tall the banner image appears. "Auto" scales proportionally with the page width (recommended). The other options set a fixed screen height.',
+      options: {
+        list: [
+          {title: 'Auto (scales with page width)', value: 'auto'},
+          {title: 'Short (~40% of screen height)', value: 'short'},
+          {title: 'Medium (~55% of screen height)', value: 'medium'},
+          {title: 'Tall (~75% of screen height)', value: 'tall'},
+          {title: 'Full screen', value: 'fullscreen'},
+        ],
+      },
+      initialValue: 'auto',
+      group: 'content',
+      hidden: ({document}) => document?.isNavParentOnly === true,
+    }),
+    defineField({
       name: 'contentBlocks',
       title: 'Content Blocks',
       type: 'array',

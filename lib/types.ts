@@ -34,6 +34,7 @@ export interface Page {
     }
     alt?: string
   }
+  headerImageHeight?: 'auto' | 'short' | 'medium' | 'tall' | 'fullscreen'
   contentBlocks?: ContentBlock[]
 }
 

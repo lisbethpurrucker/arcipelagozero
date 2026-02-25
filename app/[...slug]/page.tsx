@@ -26,6 +26,7 @@ const query = `*[_type == "page" && slug.current == $slug && (
     crop,
     hotspot
   },
+  headerImageHeight,
   contentBlocks[]
 }`
 
@@ -54,17 +55,33 @@ export default async function DynamicPage({ params }: PageProps) {
   return (
     <div>
       {/* Header Image */}
-      {page.headerImage?.asset && (
-        <div className="relative left-1/2 right-1/2 -ml-[50vw] -mr-[50vw] w-screen -mt-6 sm:-mt-8 md:-mt-10 lg:-mt-12 mb-6 sm:mb-8 md:mb-10 h-[25vh] sm:h-[30vh] md:h-[35vh] overflow-hidden">
-          <Image
-            src={urlFor(page.headerImage).width(1440).fit('crop').url()}
-            alt={page.headerImage.alt || page.title || 'Header image'}
-            fill
-            className="object-cover object-center"
-            priority
-          />
-        </div>
-      )}
+      {page.headerImage?.asset && (() => {
+        const heightClasses: Record<string, string> = {
+          auto:       'aspect-[2/1] md:aspect-[3/1]',
+          short:      'h-[40vh]',
+          medium:     'h-[55vh]',
+          tall:       'h-[75vh]',
+          fullscreen: 'h-dvh',
+        }
+        const heightClass = heightClasses[page.headerImageHeight ?? 'auto'] ?? heightClasses.auto
+        const hotspot = page.headerImage.hotspot
+        const objectPosition = hotspot
+          ? `${Math.round(hotspot.x * 100)}% ${Math.round(hotspot.y * 100)}%`
+          : 'center center'
+        return (
+          <div className={`relative left-1/2 right-1/2 -ml-[50vw] -mr-[50vw] w-screen -mt-6 sm:-mt-8 md:-mt-10 lg:-mt-12 mb-6 sm:mb-8 md:mb-10 ${heightClass} overflow-hidden`}>
+            <Image
+              src={urlFor(page.headerImage).width(2400).quality(90).url()}
+              alt={page.headerImage.alt || page.title || 'Header image'}
+              fill
+              sizes="100vw"
+              className="object-cover"
+              style={{ objectPosition }}
+              priority
+            />
+          </div>
+        )
+      })()}
 
       <div className="space-y-4 sm:space-y-6 md:space-y-8">
         {page.contentBlocks?.map((block) => (
