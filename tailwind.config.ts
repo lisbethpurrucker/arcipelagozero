@@ -17,6 +17,7 @@ const config: Config = {
         sans: ['Andret', 'system-ui', 'sans-serif'],
         mono: ['Andret Mono', 'monospace'],
         handwritten: ['Tomato', 'cursive'],
+        manrope: ['var(--font-manrope)', 'system-ui', 'sans-serif'],
       },
     },
   },
