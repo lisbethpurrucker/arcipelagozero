@@ -33,6 +33,8 @@ export interface Page {
       _type: 'reference'
     }
     alt?: string
+    hotspot?: { x: number; y: number; width: number; height: number }
+    crop?: { top: number; bottom: number; left: number; right: number }
   }
   headerImageHeight?: 'auto' | 'short' | 'medium' | 'tall' | 'fullscreen'
   contentBlocks?: ContentBlock[]
