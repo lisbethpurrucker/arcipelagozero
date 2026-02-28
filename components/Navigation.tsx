@@ -98,7 +98,7 @@ export default function Navigation({ navItems, socialLinks = [] }: NavigationPro
       <div className="relative bg-[url('/images/pattern-lines-sand.png')] bg-no-repeat bg-[length:300%_auto] bg-[position:center_top] md:bg-[length:100%_auto] md:bg-top">
       <div className="max-w-7xl mx-auto px-4 h-20 sm:px-6 sm:h-14 md:px-8 md:h-20 flex items-center justify-between">
           {/* Logo on the left */}
-          <Link href="/" className="block -ml-3 sm:ml-0" onClick={closeMobileMenu}>
+          <Link href="/" className="block -ml-3 sm:ml-0 cursor-pointer select-none" onClick={closeMobileMenu}>
             <Image
               src="/images/logo/logo.svg"
               alt="Arcipelago Zero"
