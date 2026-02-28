@@ -502,7 +502,7 @@ export default function ContentBlock({ block }: ContentBlockProps) {
     )
 
     const textEl = (
-      <div className={`flex flex-col justify-center h-full ${bgClass} text-teal-dark p-6 sm:p-8 md:p-10 ${mixedTextAlign}`}>
+      <div className={`${aspectClass} md:aspect-auto flex flex-col justify-center md:h-full overflow-hidden ${bgClass} text-teal-dark px-6 pt-12 pb-6 sm:px-8 sm:pt-14 sm:pb-8 md:p-10 ${mixedTextAlign}`}>
         {block.title && (
           <h3 className="text-xs sm:text-sm font-bold uppercase tracking-wider text-teal-dark mb-3 sm:mb-4">
             {block.title}

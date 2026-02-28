@@ -61,7 +61,7 @@ export default async function DynamicPage({ params }: PageProps) {
           short:      'h-[40vh]',
           medium:     'h-[55vh]',
           tall:       'h-[75vh]',
-          fullscreen: 'h-dvh',
+          fullscreen: 'h-dvh-safe',
         }
         const heightClass = heightClasses[page.headerImageHeight ?? 'auto'] ?? heightClasses.auto
         const hotspot = page.headerImage.hotspot

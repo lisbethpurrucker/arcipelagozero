@@ -29,9 +29,23 @@ main {
   z-index: 1;
 }
 
-/* Smooth scrolling */
-html {
-  scroll-behavior: smooth;
+/* Smooth scrolling — respects reduced-motion preference */
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
+/* dvh fallbacks for browsers that don't support dynamic viewport units */
+@layer utilities {
+  .h-dvh-safe {
+    height: 100vh;
+    height: 100dvh;
+  }
+  .min-h-mobile-menu {
+    min-height: calc(100vh - 100%);
+    min-height: calc(100dvh - 100%);
+  }
 }
 
 /* Custom text selection */

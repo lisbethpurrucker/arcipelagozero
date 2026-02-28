@@ -208,7 +208,7 @@ export default function Navigation({ navItems, socialLinks = [] }: NavigationPro
           </button>
         {/* Mobile Menu */}
         {mobileMenuOpen && (
-          <div className="md:hidden absolute left-0 right-0 top-full -mt-2 z-40 overflow-y-auto bg-white min-h-[calc(100dvh-100%)]">
+          <div className="md:hidden fixed left-0 right-0 bottom-0 top-20 sm:top-14 z-40 overflow-y-auto bg-white">
             {mobileSubMenu ? (
               /* Sub-menu view */
               <div className="flex flex-col">
@@ -225,7 +225,7 @@ export default function Navigation({ navItems, socialLinks = [] }: NavigationPro
                       key={child.href}
                       href={child.href}
                       onClick={closeMobileMenu}
-                      className={`block text-2xl font-bold py-3 px-2 transition-all text-teal-dark ${
+                      className={`block text-lg font-bold py-3 px-2 transition-all text-teal-dark ${
                         isActive(child.href)
                           ? 'underline underline-offset-4 decoration-1 hover:decoration-2'
                           : 'hover:underline hover:underline-offset-4 hover:decoration-1'
@@ -250,7 +250,7 @@ export default function Navigation({ navItems, socialLinks = [] }: NavigationPro
                       <button
                         key={item.href}
                         onClick={() => setMobileSubMenu(item)}
-                        className={`flex items-center justify-between text-2xl font-bold py-3 px-2 transition-all text-teal-dark ${
+                        className={`flex items-center justify-between text-lg font-bold py-3 px-2 transition-all text-teal-dark ${
                           showAsActive
                             ? 'underline underline-offset-4 decoration-1 hover:decoration-2'
                             : 'hover:underline hover:underline-offset-4 hover:decoration-1'
@@ -267,7 +267,7 @@ export default function Navigation({ navItems, socialLinks = [] }: NavigationPro
                       key={item.href}
                       href={item.href}
                       onClick={closeMobileMenu}
-                      className={`text-2xl font-bold py-3 px-2 transition-all text-teal-dark ${
+                      className={`text-lg font-bold py-3 px-2 transition-all text-teal-dark ${
                         itemIsActive
                           ? 'underline underline-offset-4 decoration-1 hover:decoration-2'
                           : 'hover:underline hover:underline-offset-4 hover:decoration-1'
@@ -288,10 +288,10 @@ export default function Navigation({ navItems, socialLinks = [] }: NavigationPro
                       target="_blank"
                       rel="noopener noreferrer"
                       onClick={closeMobileMenu}
-                      className="text-teal-dark/70 hover:text-teal-dark transition-colors py-3 px-2 flex items-center gap-2"
+                      className="text-teal-dark py-3 px-2 flex items-center gap-2 text-lg font-bold hover:underline hover:underline-offset-4 hover:decoration-1 transition-all"
                     >
                       <Icon size={18} strokeWidth={1.5} />
-                      <span className="text-base">{label}</span>
+                      <span>{label}</span>
                     </a>
                   )
                 })}
