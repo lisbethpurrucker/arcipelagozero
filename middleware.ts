@@ -37,14 +37,43 @@ export function middleware(request: NextRequest) {
   <title>Coming Soon</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous" />
-  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500&display=swap" rel="stylesheet" />
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     body {
       font-family: 'Manrope', sans-serif;
-      background-color: #d8c2a6;
+      background-color: #ffffff;
       color: #005769;
       min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    header {
+      background-color: white;
+      background-image: url('/images/pattern-lines-sand.png');
+      background-repeat: no-repeat;
+      background-size: 300% auto;
+      background-position: center top;
+      height: 80px;
+      display: flex;
+      align-items: center;
+      padding: 0 1rem;
+    }
+    header img {
+      height: 48px;
+      width: auto;
+      margin-left: -0.75rem;
+    }
+    @media (min-width: 640px) {
+      header { height: 56px; padding: 0 1.5rem; }
+      header img { height: 56px; margin-left: 0; }
+    }
+    @media (min-width: 768px) {
+      header { height: 80px; padding: 0 2rem; background-size: 100% auto; }
+      header img { height: 64px; }
+    }
+    main {
+      flex: 1;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -71,12 +100,42 @@ export function middleware(request: NextRequest) {
       margin: 1.5rem auto;
       opacity: 0.4;
     }
+    footer {
+      background-color: white;
+      background-image: url('/images/pattern-lines-mint.png');
+      background-repeat: no-repeat;
+      background-size: 300% auto;
+      background-position: center bottom;
+      height: 80px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    footer p {
+      color: #005769;
+      font-size: 12px;
+      font-weight: 500;
+    }
+    @media (min-width: 640px) {
+      footer { height: 56px; }
+    }
+    @media (min-width: 768px) {
+      footer { height: 64px; background-size: 100% auto; }
+    }
   </style>
 </head>
 <body>
-  <h1>Coming Soon</h1>
-  <div class="bar"></div>
-  <p>Something beautiful is on its way.</p>
+  <header>
+    <img src="/images/logo/logo.svg" alt="Arcipelago Zero" />
+  </header>
+  <main>
+    <h1>Coming Soon</h1>
+    <div class="bar"></div>
+    <p>Something beautiful is on its way.</p>
+  </main>
+  <footer>
+    <p>&copy; 2026, Arcipelago Zero</p>
+  </footer>
 </body>
 </html>`
 
@@ -87,5 +146,5 @@ export function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/((?!_next/static|_next/image|favicon\\.ico).*)'],
+  matcher: ['/((?!_next/static|_next/image|images|fonts|favicon\\.ico).*)'],
 }
