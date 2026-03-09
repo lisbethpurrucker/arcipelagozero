@@ -4,7 +4,7 @@ import type { NextRequest } from 'next/server'
 const COOKIE_NAME = 'site-preview'
 
 export function middleware(request: NextRequest) {
-  if (process.env.MAINTENANCE_MODE !== 'true') return NextResponse.next()
+  if (process.env.NEXT_PUBLIC_MAINTENANCE_MODE !== 'true') return NextResponse.next()
 
   const secret = process.env.PREVIEW_SECRET
 
@@ -34,7 +34,7 @@ export function middleware(request: NextRequest) {
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Coming Soon</title>
+  <title>Arcipelago Zero</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous" />
   <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500&display=swap" rel="stylesheet" />
