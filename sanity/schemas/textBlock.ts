@@ -44,7 +44,6 @@ export default defineType({
         input: AlignmentInput,
       },
       initialValue: 'left',
-      hidden: ({parent}) => parent?.variant === 'hero',
     }),
     defineField({
       name: 'text',

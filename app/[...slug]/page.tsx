@@ -4,6 +4,10 @@ import ContentBlock from '@/components/ContentBlock'
 import Image from 'next/image'
 import { notFound, redirect } from 'next/navigation'
 
+// Must match the nav bar heights in Navigation.tsx
+const NAV = 'h-20 sm:h-14 md:h-20'
+const NAV_NEG = '-mt-20 sm:-mt-14 md:-mt-20'
+
 interface PageProps {
   params: Promise<{ slug: string[] }>
 }
@@ -30,10 +34,17 @@ const query = `*[_type == "page" && slug.current == $slug && (
   contentBlocks[]
 }`
 
+const heightClasses: Record<string, string> = {
+  auto:       'h-[40vh]',
+  short:      'h-[40vh]',
+  medium:     'h-[55vh]',
+  tall:       'h-[75vh]',
+  fullscreen: 'h-dvh-safe',
+}
+
 export default async function DynamicPage({ params }: PageProps) {
   const { slug: slugArray } = await params
 
-  // Handle nested paths: /stays/garden-suite -> ['stays', 'garden-suite']
   const slug = slugArray[slugArray.length - 1]
   const parentSlug = slugArray.length > 1 ? slugArray[slugArray.length - 2] : ''
 
@@ -47,56 +58,58 @@ export default async function DynamicPage({ params }: PageProps) {
     notFound()
   }
 
-  // Redirect nav-parent-only pages to homepage
   if (page.isNavParentOnly) {
     redirect('/')
   }
 
+  const hasHero = Boolean(page.headerImage?.asset)
+  const heightClass = heightClasses[page.headerImageHeight ?? 'auto'] ?? heightClasses.auto
+
   return (
     <div>
-      {/* Header Image */}
-      {page.headerImage?.asset && (() => {
-        const heightClasses: Record<string, string> = {
-          auto:       'aspect-[2/1] md:aspect-[3/1]',
-          short:      'h-[40vh]',
-          medium:     'h-[55vh]',
-          tall:       'h-[75vh]',
-          fullscreen: 'h-dvh-safe',
-        }
-        const heightClass = heightClasses[page.headerImageHeight ?? 'auto'] ?? heightClasses.auto
-        const hotspot = page.headerImage.hotspot
+      {hasHero && (() => {
+        const hotspot = page.headerImage!.hotspot
         const objectPosition = hotspot
           ? `${Math.round(hotspot.x * 100)}% ${Math.round(hotspot.y * 100)}%`
           : 'center center'
         return (
-          <div className={`relative left-1/2 right-1/2 -ml-[50vw] -mr-[50vw] w-screen -mt-6 sm:-mt-8 md:-mt-10 lg:-mt-12 mb-6 sm:mb-8 md:mb-10 ${heightClass} overflow-hidden`}>
-            <Image
-              src={urlFor(page.headerImage).width(2400).quality(90).url()}
-              alt={page.headerImage.alt || page.title || 'Header image'}
-              fill
-              sizes="100vw"
-              className="object-cover"
-              style={{ objectPosition }}
-              priority
-            />
+          /* Hero section — transparent nav overlay */
+          <div className="relative">
+            <div className={`sticky top-0 ${NAV} z-40 pointer-events-none`} />
+            <div className={`relative ${NAV_NEG} ${heightClass} overflow-hidden`}>
+              <Image
+                src={urlFor(page.headerImage!).width(2400).quality(90).url()}
+                alt={page.headerImage!.alt || page.title || 'Header image'}
+                fill
+                sizes="100vw"
+                className="object-cover"
+                style={{ objectPosition }}
+                priority
+              />
+            </div>
           </div>
         )
       })()}
 
-      <div className="space-y-4 sm:space-y-6 md:space-y-8">
-        {page.contentBlocks?.map((block) => (
-          <ContentBlock key={block._key} block={block} />
-        )) || (
-          <div className="bg-sand p-6 sm:p-8 md:p-10 lg:p-12 rounded-sm">
-            <p className="text-xs sm:text-sm">Page content will appear here once configured in Sanity Studio.</p>
+      {/* Content section — white sticky blocker makes nav appear white */}
+      <div className="relative">
+        <div className={`sticky top-0 ${NAV} z-40 bg-white pointer-events-none`} />
+        <div className="max-w-5xl mx-auto px-4 py-3 sm:px-6 sm:py-4 md:px-8 md:py-6 lg:px-12">
+          <div className="space-y-2 sm:space-y-3 md:space-y-4">
+            {page.contentBlocks?.map((block) => (
+              <ContentBlock key={block._key} block={block} />
+            )) || (
+              <div className="bg-sand p-6 sm:p-8 md:p-10 lg:p-12 rounded-sm">
+                <p className="text-xs sm:text-sm">Page content will appear here once configured in Sanity Studio.</p>
+              </div>
+            )}
           </div>
-        )}
+        </div>
       </div>
     </div>
   )
 }
 
-// Generate static params for known pages (exclude nav-parent-only pages)
 export async function generateStaticParams() {
   const pages = await sanityFetch<{ slug: string; parentSlug: string | null }[]>({
     query: `*[_type == "page" && defined(slug.current) && isNavParentOnly != true]{

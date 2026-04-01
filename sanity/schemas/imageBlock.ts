@@ -23,6 +23,25 @@ export default defineType({
         },
       ],
     }),
+    defineField({
+      name: 'aspectRatio',
+      title: 'Image Ratio',
+      type: 'string',
+      description: 'Choose the shape of the image. Default is a standard landscape rectangle.',
+      options: {
+        list: [
+          {title: '16:9 — Wide landscape', value: '16/9'},
+          {title: '3:2 — Landscape (default)', value: '3/2'},
+          {title: '4:3 — Standard', value: '4/3'},
+          {title: '1:1 — Square', value: '1/1'},
+          {title: '3:4 — Portrait', value: '3/4'},
+          {title: '2:3 — Vertical portrait', value: '2/3'},
+          {title: '9:16 — Tall vertical', value: '9/16'},
+        ],
+        layout: 'radio',
+      },
+      initialValue: '3/2',
+    }),
   ],
   preview: {
     select: {

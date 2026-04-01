@@ -14,7 +14,7 @@ const config: Config = {
         'sand': '#d8c2a6',
       },
       fontFamily: {
-        sans: ['Andret', 'system-ui', 'sans-serif'],
+        sans: ['var(--font-manrope)', 'system-ui', 'sans-serif'],
         mono: ['Andret Mono', 'monospace'],
         handwritten: ['Tomato', 'cursive'],
         manrope: ['var(--font-manrope)', 'system-ui', 'sans-serif'],

@@ -3,7 +3,7 @@
 import Image from 'next/image'
 import { PortableText, PortableTextComponents } from '@portabletext/react'
 import { urlFor } from '@/lib/sanity'
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useRef } from 'react'
 
 const portableTextComponents: PortableTextComponents = {
   block: {
@@ -185,7 +185,7 @@ function CarouselBlock({ block }: { block: any }) {
                 )}
                 {/* Title */}
                 {item.title && (
-                  <h3 className="text-base sm:text-lg font-bold text-center text-teal-dark uppercase tracking-wide">
+                  <h3 className="text-base sm:text-lg font-bold text-center text-teal-dark">
                     {item.link ? (
                       <a href={item.link} className="hover:underline">
                         {item.title}
@@ -256,6 +256,43 @@ function getEmbedUrl(url: string): string | null {
   return null
 }
 
+// VideoBlock uses a ref to set muted imperatively — React doesn't propagate
+// the `muted` prop as a DOM attribute, so browsers ignore it and block autoplay.
+function VideoBlock({ block }: { block: any }) {
+  const videoRef = useRef<HTMLVideoElement>(null)
+
+  useEffect(() => {
+    if (videoRef.current && block.autoplay) {
+      videoRef.current.muted = true
+    }
+  }, [block.autoplay])
+
+  return (
+    <div className="bg-white text-teal-dark">
+      <div className="aspect-video overflow-hidden">
+        {block.video?.asset?._ref ? (
+          <video
+            ref={videoRef}
+            src={getSanityFileUrl(block.video.asset._ref)}
+            className="w-full h-full object-cover"
+            controls
+            autoPlay={block.autoplay}
+            loop={block.loop}
+            playsInline
+          />
+        ) : (
+          <div className="w-full h-full flex items-center justify-center bg-teal-dark">
+            <span className="text-white text-xs opacity-40 font-light">Video placeholder</span>
+          </div>
+        )}
+      </div>
+      {block.caption && (
+        <p className="text-xs sm:text-sm mt-2 opacity-70 text-center">{block.caption}</p>
+      )}
+    </div>
+  )
+}
+
 export default function ContentBlock({ block }: ContentBlockProps) {
   // Text Block
   if (block._type === 'textBlock') {
@@ -266,22 +303,22 @@ export default function ContentBlock({ block }: ContentBlockProps) {
       right: 'text-right',
     }
     const fontSizeClasses: Record<string, string> = {
-      small: 'text-base',
-      normal: 'text-lg',
-      large: 'text-xl',
-      xlarge: 'text-2xl',
+      small: 'text-sm sm:text-base',
+      normal: 'text-base sm:text-lg',
+      large: 'text-lg sm:text-xl',
+      xlarge: 'text-xl sm:text-2xl',
     }
     const textAlign = textAlignClasses[block.textAlign] || textAlignClasses.left
     const fontSize = fontSizeClasses[block.fontSize] || fontSizeClasses.normal
 
     return (
-      <div className={`bg-white text-teal-dark ${textAlign} ${isHero ? 'relative -ml-4 sm:-ml-6 md:-ml-8 lg:-ml-12 pr-0 pl-2 sm:pl-3 py-4 sm:py-6 md:py-8 lg:py-10' : 'p-4 sm:p-6 md:p-8 lg:p-10'}`}>
+      <div className={`bg-white text-teal-dark ${textAlign} ${isHero ? 'relative -ml-4 sm:-ml-6 md:-ml-8 lg:-ml-12 pr-0 pl-2 sm:pl-3 py-3 sm:py-4 md:py-6' : 'py-3 sm:py-4 md:py-6'}`}>
         {block.title && (
-          <h3 className="text-xs sm:text-sm font-bold uppercase tracking-wider text-teal-dark mb-3 sm:mb-4">
+          <h3 className="text-xs sm:text-sm font-bold text-teal-dark mb-3 sm:mb-4">
             {block.title}
           </h3>
         )}
-        <div className={`max-w-none leading-relaxed ${isHero ? 'text-lg sm:text-xl md:text-2xl font-medium' : `${fontSize} font-light`}`}>
+        <div className={`max-w-none leading-[1.8] ${isHero ? 'text-lg sm:text-xl md:text-2xl font-medium' : `${fontSize} font-light`}`}>
           {block.text && <PortableText value={block.text} components={portableTextComponents} />}
         </div>
         {block.callToAction?.text && (
@@ -298,14 +335,25 @@ export default function ContentBlock({ block }: ContentBlockProps) {
 
   // Image Block
   if (block._type === 'imageBlock') {
+    const aspectRatioDimensions: Record<string, { w: number; h: number; cls: string }> = {
+      '16/9': { w: 960, h: 540, cls: 'aspect-video' },
+      '3/2':  { w: 900, h: 600, cls: 'aspect-[3/2]' },
+      '4/3':  { w: 800, h: 600, cls: 'aspect-[4/3]' },
+      '1/1':  { w: 600, h: 600, cls: 'aspect-square' },
+      '3/4':  { w: 600, h: 800, cls: 'aspect-[3/4]' },
+      '2/3':  { w: 400, h: 600, cls: 'aspect-[2/3]' },
+      '9/16': { w: 450, h: 800, cls: 'aspect-[9/16]' },
+    }
+    const ratioKey = block.aspectRatio || '3/2'
+    const { w, h, cls } = aspectRatioDimensions[ratioKey] ?? aspectRatioDimensions['3/2']
     return (
-      <div className="aspect-[4/3] overflow-hidden bg-white text-teal-dark">
+      <div className={`${cls} overflow-hidden bg-white text-teal-dark`}>
         {block.image ? (
           <Image
-            src={urlFor(block.image).width(800).height(600).fit('crop').url()}
+            src={urlFor(block.image).width(w).height(h).fit('crop').url()}
             alt={block.image.alt || ''}
-            width={800}
-            height={600}
+            width={w}
+            height={h}
             className="w-full h-full object-cover"
           />
         ) : (
@@ -319,30 +367,7 @@ export default function ContentBlock({ block }: ContentBlockProps) {
 
   // Video Block
   if (block._type === 'videoBlock') {
-    return (
-      <div className="bg-white text-teal-dark">
-        <div className="aspect-video overflow-hidden">
-          {block.video?.asset?._ref ? (
-            <video
-              src={getSanityFileUrl(block.video.asset._ref)}
-              className="w-full h-full object-cover"
-              controls
-              autoPlay={block.autoplay}
-              muted={block.autoplay}
-              loop={block.loop}
-              playsInline
-            />
-          ) : (
-            <div className="w-full h-full flex items-center justify-center bg-teal-dark">
-              <span className="text-white text-xs opacity-40 font-light">Video placeholder</span>
-            </div>
-          )}
-        </div>
-        {block.caption && (
-          <p className="text-xs sm:text-sm mt-2 opacity-70 text-center">{block.caption}</p>
-        )}
-      </div>
-    )
+    return <VideoBlock block={block} />
   }
 
   // Gallery Block
@@ -471,14 +496,16 @@ export default function ContentBlock({ block }: ContentBlockProps) {
       '4/3': 'aspect-[4/3]',
       '1/1': 'aspect-square',
       '3/4': 'aspect-[3/4]',
+      '2/3': 'aspect-[2/3]',
+      '9/16': 'aspect-[9/16]',
     }
     const aspectClass = aspectClasses[block.imageAspectRatio] || 'aspect-[4/3]'
 
     const fontSizeClasses: Record<string, string> = {
-      small: 'text-base',
-      normal: 'text-lg',
-      large: 'text-xl',
-      xlarge: 'text-2xl',
+      small: 'text-sm sm:text-base',
+      normal: 'text-base sm:text-lg',
+      large: 'text-lg sm:text-xl',
+      xlarge: 'text-xl sm:text-2xl',
     }
     const textAlignClasses: Record<string, string> = {
       left: 'text-left',
@@ -502,14 +529,14 @@ export default function ContentBlock({ block }: ContentBlockProps) {
     )
 
     const textEl = (
-      <div className={`${aspectClass} md:aspect-auto flex flex-col justify-center md:h-full overflow-hidden ${bgClass} text-teal-dark px-6 pt-12 pb-6 sm:px-8 sm:pt-14 sm:pb-8 md:p-10 ${mixedTextAlign}`}>
+      <div className={`flex flex-col justify-center overflow-hidden ${bgClass} text-teal-dark px-4 py-6 sm:px-6 sm:py-8 md:p-8 ${mixedTextAlign}`}>
         {block.title && (
-          <h3 className="text-xs sm:text-sm font-bold uppercase tracking-wider text-teal-dark mb-3 sm:mb-4">
+          <h3 className="text-lg sm:text-xl md:text-2xl font-bold text-teal-dark mb-3 sm:mb-4">
             {block.title}
           </h3>
         )}
         {block.text && (
-          <div className={`leading-relaxed font-light ${mixedFontSize}`}>
+          <div className={`leading-[1.8] font-light ${mixedFontSize}`}>
             <PortableText value={block.text} components={portableTextComponents} />
           </div>
         )}
@@ -542,9 +569,9 @@ export default function ContentBlock({ block }: ContentBlockProps) {
     const quoteSize = quoteSizeClasses[block.fontSize] || quoteSizeClasses.large
 
     return (
-      <div className="p-6 sm:p-8 md:p-10 lg:p-12 bg-white text-teal-dark">
+      <div className="p-4 sm:p-6 md:p-8 bg-white text-teal-dark">
         <blockquote className="text-center">
-          <div className={`${quoteSize} leading-relaxed font-light italic mb-4 sm:mb-6`}>
+          <div className={`${quoteSize} leading-[1.8] font-light italic mb-4 sm:mb-6`}>
             {block.quote && <PortableText value={block.quote} components={portableTextComponents} />}
           </div>
           {(block.author || block.role) && (
@@ -562,10 +589,10 @@ export default function ContentBlock({ block }: ContentBlockProps) {
   // CTA Block
   if (block._type === 'ctaBlock') {
     const fontSizeClasses: Record<string, string> = {
-      small: 'text-base',
-      normal: 'text-lg',
-      large: 'text-xl',
-      xlarge: 'text-2xl',
+      small: 'text-sm sm:text-base',
+      normal: 'text-base sm:text-lg',
+      large: 'text-lg sm:text-xl',
+      xlarge: 'text-xl sm:text-2xl',
     }
     const alignClasses: Record<string, string> = {
       left: 'text-left',
@@ -582,14 +609,14 @@ export default function ContentBlock({ block }: ContentBlockProps) {
     const buttonClass = buttonStyles[block.style] || buttonStyles.filled
 
     return (
-      <div className={`p-6 sm:p-8 md:p-10 bg-white text-teal-dark ${align}`}>
+      <div className={`p-4 sm:p-6 md:p-8 bg-white text-teal-dark ${align}`}>
         {block.heading && (
           <h3 className="text-lg sm:text-xl md:text-2xl font-bold mb-2 sm:mb-3 text-teal-dark">
             {block.heading}
           </h3>
         )}
         {block.text && (
-          <div className={`${fontSizeClasses[block.fontSize] || 'text-base'} leading-relaxed font-light mb-4 sm:mb-6 max-w-2xl mx-auto`}>
+          <div className={`${fontSizeClasses[block.fontSize] || 'text-base'} leading-[1.8] font-light mb-4 sm:mb-6 max-w-2xl mx-auto`}>
             <PortableText value={block.text} components={portableTextComponents} />
           </div>
         )}

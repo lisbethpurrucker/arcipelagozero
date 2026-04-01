@@ -12,14 +12,14 @@ html, body {
   margin: 0;
   padding: 0;
   min-height: 100vh;
-  font-family: 'Andret', system-ui, sans-serif;
+  font-family: var(--font-manrope), system-ui, sans-serif;
 }
 
 body {
   position: relative;
   background-color: #ffffff;
   font-size: 14px;
-  line-height: 1.6;
+  line-height: 1.8;
   color: #5d7678;
   font-weight: 400;
 }

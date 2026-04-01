@@ -95,16 +95,16 @@ export default function Navigation({ navItems, socialLinks = [] }: NavigationPro
 
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 bg-white font-manrope">
-      <div className="relative bg-[url('/images/pattern-lines-sand.png')] bg-no-repeat bg-[length:300%_auto] bg-[position:center_top] md:bg-[length:100%_auto] md:bg-top">
+      <div className="relative bg-[url('/images/pattern-lines-mint-flipped.png')] bg-no-repeat bg-[length:300%_auto] bg-[position:center_top] md:bg-[length:100%_auto] md:bg-top">
       <div className="max-w-7xl mx-auto px-4 h-20 sm:px-6 sm:h-14 md:px-8 md:h-20 flex items-center justify-between">
           {/* Logo on the left */}
-          <Link href="/" className="block -ml-3 sm:ml-0 cursor-pointer select-none" onClick={closeMobileMenu}>
+          <Link href="/" className="flex items-center cursor-pointer select-none" onClick={closeMobileMenu}>
             <Image
               src="/images/logo/logo.svg"
               alt="Arcipelago Zero"
               width={200}
               height={50}
-              className="h-12 sm:h-14 md:h-16 w-auto"
+              className="h-14 md:h-[4.8rem] mt-2 -ml-8 w-auto block"
               priority
             />
           </Link>
@@ -122,7 +122,7 @@ export default function Navigation({ navItems, socialLinks = [] }: NavigationPro
                   <div key={item.href} className="relative group">
                     {item.isNavParentOnly ? (
                       <button
-                        className={`text-lg font-bold transition-all flex items-center gap-1 text-teal-dark ${
+                        className={`text-sm font-light tracking-wide transition-all flex items-center gap-1 text-teal-dark ${
                           showAsActive
                             ? 'underline underline-offset-4 decoration-1 hover:decoration-2'
                             : 'hover:underline hover:underline-offset-4 hover:decoration-1'
@@ -134,7 +134,7 @@ export default function Navigation({ navItems, socialLinks = [] }: NavigationPro
                     ) : (
                       <Link
                         href={item.href}
-                        className={`text-lg font-bold transition-all flex items-center gap-1 text-teal-dark ${
+                        className={`text-sm font-light tracking-wide transition-all flex items-center gap-1 text-teal-dark ${
                           showAsActive
                             ? 'underline underline-offset-4 decoration-1 hover:decoration-2'
                             : 'hover:underline hover:underline-offset-4 hover:decoration-1'
@@ -151,7 +151,7 @@ export default function Navigation({ navItems, socialLinks = [] }: NavigationPro
                           <Link
                             key={child.href}
                             href={child.href}
-                            className={`block px-4 py-2 text-lg font-bold transition-all text-teal-dark ${
+                            className={`block px-4 py-2 text-sm font-light tracking-wide transition-all text-teal-dark ${
                               isActive(child.href)
                                 ? 'underline underline-offset-4 decoration-1 hover:decoration-2'
                                 : 'hover:underline hover:underline-offset-4 hover:decoration-1'
@@ -170,7 +170,7 @@ export default function Navigation({ navItems, socialLinks = [] }: NavigationPro
                 <Link
                   key={item.href}
                   href={item.href}
-                  className={`text-lg font-bold transition-all text-teal-dark ${
+                  className={`text-sm font-light tracking-wide transition-all text-teal-dark ${
                     itemIsActive
                       ? 'underline underline-offset-4 decoration-1 hover:decoration-2'
                       : 'hover:underline hover:underline-offset-4 hover:decoration-1'
@@ -225,7 +225,7 @@ export default function Navigation({ navItems, socialLinks = [] }: NavigationPro
                       key={child.href}
                       href={child.href}
                       onClick={closeMobileMenu}
-                      className={`block text-lg font-bold py-3 px-2 transition-all text-teal-dark ${
+                      className={`block text-sm font-light tracking-wide py-3 px-2 transition-all text-teal-dark ${
                         isActive(child.href)
                           ? 'underline underline-offset-4 decoration-1 hover:decoration-2'
                           : 'hover:underline hover:underline-offset-4 hover:decoration-1'
@@ -250,7 +250,7 @@ export default function Navigation({ navItems, socialLinks = [] }: NavigationPro
                       <button
                         key={item.href}
                         onClick={() => setMobileSubMenu(item)}
-                        className={`flex items-center justify-between text-lg font-bold py-3 px-2 transition-all text-teal-dark ${
+                        className={`flex items-center justify-between text-sm font-light tracking-wide py-3 px-2 transition-all text-teal-dark ${
                           showAsActive
                             ? 'underline underline-offset-4 decoration-1 hover:decoration-2'
                             : 'hover:underline hover:underline-offset-4 hover:decoration-1'
@@ -267,7 +267,7 @@ export default function Navigation({ navItems, socialLinks = [] }: NavigationPro
                       key={item.href}
                       href={item.href}
                       onClick={closeMobileMenu}
-                      className={`text-lg font-bold py-3 px-2 transition-all text-teal-dark ${
+                      className={`text-sm font-light tracking-wide py-3 px-2 transition-all text-teal-dark ${
                         itemIsActive
                           ? 'underline underline-offset-4 decoration-1 hover:decoration-2'
                           : 'hover:underline hover:underline-offset-4 hover:decoration-1'
@@ -288,7 +288,7 @@ export default function Navigation({ navItems, socialLinks = [] }: NavigationPro
                       target="_blank"
                       rel="noopener noreferrer"
                       onClick={closeMobileMenu}
-                      className="text-teal-dark py-3 px-2 flex items-center gap-2 text-lg font-bold hover:underline hover:underline-offset-4 hover:decoration-1 transition-all"
+                      className="text-teal-dark py-3 px-2 flex items-center gap-2 text-sm font-light tracking-wide hover:underline hover:underline-offset-4 hover:decoration-1 transition-all"
                     >
                       <Icon size={18} strokeWidth={1.5} />
                       <span>{label}</span>
