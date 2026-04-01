@@ -50,7 +50,7 @@ export function middleware(request: NextRequest) {
     }
     header {
       background-color: white;
-      background-image: url('/images/pattern-lines-sand.png');
+      background-image: url('/images/pattern-lines-mint-flipped.png');
       background-repeat: no-repeat;
       background-size: 300% auto;
       background-position: center top;
@@ -60,17 +60,17 @@ export function middleware(request: NextRequest) {
       padding: 0 1rem;
     }
     header img {
-      height: 48px;
+      height: 3.5rem;
       width: auto;
-      margin-left: -0.75rem;
+      margin-top: 0.5rem;
+      margin-left: -2rem;
     }
     @media (min-width: 640px) {
       header { height: 56px; padding: 0 1.5rem; }
-      header img { height: 56px; margin-left: 0; }
     }
     @media (min-width: 768px) {
       header { height: 80px; padding: 0 2rem; background-size: 100% auto; }
-      header img { height: 64px; }
+      header img { height: 4.8rem; }
     }
     main {
       flex: 1;
