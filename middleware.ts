@@ -71,7 +71,7 @@ export function middleware(request: NextRequest) {
     }
     @media (min-width: 768px) {
       header { height: 80px; padding: 0 2rem; background-size: 100% auto; }
-      header img { height: 4.8rem; }
+      header img { height: 4.8rem; margin-left: 0; }
     }
     main {
       flex: 1;
