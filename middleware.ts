@@ -25,6 +25,7 @@ export function middleware(request: NextRequest) {
       path: '/',
       maxAge: 60 * 60 * 24 * 7, // 1 week
     })
+    response.headers.set('Cache-Control', 'no-store')
     return response
   }
 
@@ -141,7 +142,10 @@ export function middleware(request: NextRequest) {
 
   return new NextResponse(html, {
     status: 200,
-    headers: { 'Content-Type': 'text/html; charset=utf-8' },
+    headers: {
+      'Content-Type': 'text/html; charset=utf-8',
+      'Cache-Control': 'no-store',
+    },
   })
 }
 
