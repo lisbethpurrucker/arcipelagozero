@@ -4,7 +4,7 @@ import type { NextRequest } from 'next/server'
 const COOKIE_NAME = 'site-preview'
 
 export function middleware(request: NextRequest) {
-  if (process.env.MAINTENANCE_MODE !== 'true') return NextResponse.next()
+  if (process.env.NEXT_PUBLIC_MAINTENANCE_MODE !== 'true') return NextResponse.next()
 
   const secret = process.env.PREVIEW_SECRET
 
