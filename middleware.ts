@@ -48,30 +48,55 @@ export function middleware(request: NextRequest) {
       min-height: 100vh;
       display: flex;
       flex-direction: column;
+      padding-top: 80px;
     }
-    header {
+    nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 50;
       background-color: white;
+    }
+    nav .pattern {
+      position: relative;
       background-image: url('/images/pattern-lines-mint-flipped.png');
       background-repeat: no-repeat;
       background-size: 300% auto;
       background-position: center top;
+    }
+    nav .container {
+      max-width: 80rem;
+      margin: 0 auto;
+      padding: 0 1rem;
       height: 80px;
       display: flex;
       align-items: center;
-      padding: 0 1rem;
+      justify-content: space-between;
     }
-    header img {
+    nav .logo {
+      display: flex;
+      align-items: center;
+      text-decoration: none;
+      user-select: none;
+    }
+    nav img {
       height: 3.5rem;
       width: auto;
+      max-width: 100%;
       margin-top: 0.5rem;
       margin-left: -2rem;
+      display: block;
     }
     @media (min-width: 640px) {
-      header { height: 56px; padding: 0 1.5rem; }
+      body { padding-top: 56px; }
+      nav .container { padding: 0 1.5rem; height: 56px; }
     }
     @media (min-width: 768px) {
-      header { height: 80px; padding: 0 2rem; background-size: 100% auto; }
-      header img { height: 4.8rem; margin-left: 0; }
+      body { padding-top: 80px; }
+      nav .pattern { background-size: 100% auto; }
+      nav .container { padding: 0 2rem; height: 80px; }
+      nav img { height: 5.8rem; margin-left: -4rem; }
     }
     main {
       flex: 1;
@@ -126,9 +151,15 @@ export function middleware(request: NextRequest) {
   </style>
 </head>
 <body>
-  <header>
-    <img src="/images/logo/logo.svg" alt="Arcipelago Zero" />
-  </header>
+  <nav>
+    <div class="pattern">
+      <div class="container">
+        <a href="/" class="logo">
+          <img src="/images/logo/logo.svg" alt="Arcipelago Zero" />
+        </a>
+      </div>
+    </div>
+  </nav>
   <main>
     <h1>Coming Soon</h1>
     <div class="bar"></div>

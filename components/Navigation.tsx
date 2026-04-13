@@ -104,7 +104,7 @@ export default function Navigation({ navItems, socialLinks = [] }: NavigationPro
               alt="Arcipelago Zero"
               width={200}
               height={50}
-              className="h-14 md:h-[4.8rem] mt-2 -ml-8 w-auto block"
+              className="h-14 md:h-[5.8rem] mt-2 -ml-8 md:-ml-16 w-auto block"
               priority
             />
           </Link>
@@ -214,7 +214,7 @@ export default function Navigation({ navItems, socialLinks = [] }: NavigationPro
               <div className="flex flex-col">
                 <button
                   onClick={() => setMobileSubMenu(null)}
-                  className="flex items-center gap-2 w-full text-left text-base py-3 px-4 text-teal-dark bg-[#f5f0e8]"
+                  className="flex items-center gap-2 w-full text-left text-base py-3 px-4 text-teal-dark bg-[#aed7c4]/50"
                 >
                   <ArrowLeft size={18} />
                   {mobileSubMenu.label}
