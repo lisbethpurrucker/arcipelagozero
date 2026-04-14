@@ -214,7 +214,7 @@ export default function Navigation({ navItems, socialLinks = [] }: NavigationPro
               <div className="flex flex-col">
                 <button
                   onClick={() => setMobileSubMenu(null)}
-                  className="flex items-center gap-2 w-full text-left text-base py-3 px-4 text-teal-dark bg-[#aed7c4]/50"
+                  className="flex items-center gap-2 w-full text-left text-base py-3 px-4 text-teal-dark" style={{ backgroundColor: 'rgba(174, 215, 196, 0.25)' }}
                 >
                   <ArrowLeft size={18} />
                   {mobileSubMenu.label}
