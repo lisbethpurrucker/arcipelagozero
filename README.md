@@ -1,308 +1,199 @@
-# Minimal Site - Next.js + Sanity CMS
+# Arcipelago Zero
 
-A beautiful, minimal website with content management system built with Next.js 14 and Sanity CMS.
-
-## Features
-
-- 🎨 Clean, minimal design with dotted grid background
-- 📝 Full content management through Sanity Studio
-- 🎯 6 main pages: Home, Vision, Agenda, Stays, Journey, Members
-- 👥 Built-in CRM for managing contacts
-- 📱 Fully responsive design
-- ⚡ Fast and optimized with Next.js 14
-- 🎨 Tailwind CSS for styling
-- 🔒 Type-safe with TypeScript
+A minimal, content-managed website built with Next.js 14 and Sanity CMS.
 
 ## Tech Stack
 
 - **Frontend**: Next.js 14 (App Router), React 18, TypeScript
-- **Styling**: Tailwind CSS
+- **Styling**: Tailwind CSS with custom brand colours
 - **CMS**: Sanity v3
-- **Deployment**: Vercel (frontend) + Sanity Cloud (CMS)
+- **Fonts**: Manrope (Google Fonts)
+- **Deployment**: Vercel (frontend) + Sanity Cloud (Studio)
+
+## Design
+
+### Brand colours
+
+| Name | Hex | Tailwind token |
+|------|-----|----------------|
+| Teal dark | `#005769` | `teal-dark` |
+| Mint | `#aed7c4` | `mint` |
+| Sand | `#d8c2a6` | `sand` |
+
+### Layout
+
+- **Navigation**: fixed top bar with a mint pattern strip (`pattern-lines-mint-flipped.png`). Nav items and social links are fetched from Sanity at build/request time. Supports nested pages (dropdown on desktop, drill-down on mobile).
+- **Footer**: mint pattern strip (`pattern-lines-mint.png`) with copyright line.
+- **Page padding**: root layout accounts for the fixed nav height (`pt-20`/`pt-14`/`pt-20` at mobile/sm/md breakpoints).
 
 ## Project Structure
 
 ```
-project/
-├── app/                    # Next.js app directory
-│   ├── page.tsx           # Home page
-│   ├── vision/            # Vision page
-│   ├── agenda/            # Agenda page
-│   ├── stays/             # Stays page
-│   ├── journey/           # Journey page
-│   ├── members/           # Members page
-│   ├── layout.tsx         # Root layout
-│   └── globals.css        # Global styles
-├── components/            # React components
-│   ├── Navigation.tsx     # Sidebar navigation
-│   ├── Footer.tsx         # Footer
-│   ├── PageHeader.tsx     # Page headers
-│   └── ContentBlock.tsx   # Content block renderer
-├── lib/                   # Utilities
-│   ├── sanity.ts          # Sanity client
-│   └── types.ts           # TypeScript types
-├── sanity/                # Sanity Studio
-│   ├── schemas/           # Content schemas
-│   └── sanity.config.ts   # Sanity configuration
-└── package.json
+arcipelagozero/
+├── app/
+│   ├── [...slug]/page.tsx   # Dynamic catch-all — renders any Sanity page
+│   ├── page.tsx             # Home page (slug: "home")
+│   ├── layout.tsx           # Root layout (nav + footer)
+│   └── globals.css          # Global styles
+├── components/
+│   ├── Navigation.tsx       # Fixed nav bar (client component)
+│   ├── NavigationWrapper.tsx# Server component — fetches nav data from Sanity
+│   ├── Footer.tsx           # Footer
+│   ├── PageHeader.tsx       # Optional full-width header image
+│   ├── ContentBlock.tsx     # Renders a single content block
+│   └── AccordionList.tsx    # Accordion UI component
+├── lib/
+│   ├── sanity.ts            # Sanity client + fetch helper
+│   └── types.ts             # TypeScript types
+├── middleware.ts            # Maintenance / coming-soon mode
+├── sanity/                  # Sanity Studio (separate app)
+│   ├── schemas/             # Content schemas
+│   └── sanity.config.ts
+└── public/
+    └── images/              # Static images (logo, pattern strips)
 ```
 
-## Setup Instructions
+## Content Blocks
 
-### 1. Install Dependencies
+Pages are built from composable blocks in Sanity Studio:
 
-First, install the main project dependencies:
+| Block | Purpose |
+|-------|---------|
+| Text Block | Rich text with background colour |
+| Image Block | Full-width or contained image |
+| Mixed Block | Image + text side by side |
+| Gallery Block | Grid of images |
+| Carousel Block | Horizontally scrolling images |
+| Video Block | Embedded video |
+| Embed Block | Arbitrary iframe embed |
+| Quote Block | Styled pull quote |
+| CTA Block | Call-to-action with button |
+| Spacer Block | Vertical whitespace |
+
+## Sanity Page Settings
+
+Each page has three setting groups:
+
+**Content**
+- Title, URL slug, optional full-width header image + height (auto / short / medium / tall / fullscreen)
+- Content blocks (drag to reorder)
+- "Navigation Parent Only" toggle — makes the page a nav-only dropdown container with no content of its own
+
+**Navigation**
+- Show in navigation menu (on/off)
+- Navigation label (overrides title in the menu)
+- Navigation order (lower = earlier)
+- Parent page (for nested URLs like `/stays/creative-residency`)
+
+**Settings**
+- Published (off = hidden from visitors without deleting)
+
+## Site Settings
+
+A single `siteSettings` document in Sanity controls:
+- **Site title** — shown in browser tabs and search results
+- **Social media links** — add any platform; toggle "Show in Navigation" per link
+
+Supported platforms: Instagram, Facebook, X (Twitter), LinkedIn, YouTube, TikTok, Pinterest, Vimeo, Threads, Bluesky.
+
+## Maintenance / Coming Soon Mode
+
+Set `NEXT_PUBLIC_MAINTENANCE_MODE=true` in Vercel environment variables to show a "Coming Soon" page to all visitors. The full site stays accessible for preview:
+
+```
+https://your-site.vercel.app/?preview=YOUR_PREVIEW_SECRET
+```
+
+This sets a cookie valid for 7 days, so you can browse the full site without the query param.
+
+## Setup
+
+### 1. Install dependencies
 
 ```bash
 npm install
+cd sanity && npm install && cd ..
 ```
 
-Then install Sanity Studio dependencies:
+### 2. Configure environment variables
 
-```bash
-cd sanity
-npm install
-cd ..
-```
-
-### 2. Set Up Sanity Project
-
-1. **Create a Sanity account** (if you don't have one):
-   - Go to [sanity.io](https://www.sanity.io/)
-   - Sign up or log in
-
-2. **Create a new Sanity project**:
-   ```bash
-   cd sanity
-   npm create sanity@latest -- --project-plan free
-   ```
-   
-   Follow the prompts:
-   - Use existing account
-   - Create new project (choose a name)
-   - Use default dataset configuration (production)
-   - Output path: current directory
-   - Select project template: Clean project
-
-3. **Get your Project ID**:
-   - After creation, note your `projectId`
-   - Or find it at [sanity.io/manage](https://www.sanity.io/manage)
-
-### 3. Configure Environment Variables
-
-**For the Next.js app** (root directory):
-
-Create `.env.local`:
+**Root `.env.local`:**
 
 ```bash
 cp .env.local.example .env.local
 ```
 
-Edit `.env.local` and add your Sanity credentials:
-
 ```env
-NEXT_PUBLIC_SANITY_PROJECT_ID="your-project-id-here"
+NEXT_PUBLIC_SANITY_PROJECT_ID="your-project-id"
 NEXT_PUBLIC_SANITY_DATASET="production"
 NEXT_PUBLIC_SANITY_API_VERSION="2024-01-01"
+
+# Optional: needed only for server-side content writes
+SANITY_API_TOKEN="your-token"
+
+# Optional: enables maintenance / coming soon mode
+NEXT_PUBLIC_MAINTENANCE_MODE="false"
+PREVIEW_SECRET="your-secret-here"
 ```
 
-**For Sanity Studio** (sanity directory):
-
-Create `sanity/.env.local`:
+**Sanity Studio `sanity/.env.local`:**
 
 ```bash
-cd sanity
-cp .env.local.example .env.local
+cd sanity && cp .env.local.example .env.local
 ```
 
-Edit `sanity/.env.local`:
-
 ```env
-SANITY_STUDIO_PROJECT_ID="your-project-id-here"
+SANITY_STUDIO_PROJECT_ID="your-project-id"
 SANITY_STUDIO_DATASET="production"
 ```
 
-Also update `sanity/sanity.cli.ts` with your project ID.
+### 3. Run locally
 
-### 4. Run Locally
-
-Open two terminal windows:
-
-**Terminal 1 - Next.js frontend:**
+**Terminal 1 — Next.js frontend:**
 ```bash
 npm run dev
+# http://localhost:3000
 ```
-Visit http://localhost:3000
 
-**Terminal 2 - Sanity Studio:**
+**Terminal 2 — Sanity Studio:**
 ```bash
-cd sanity
-npm run dev
+npm run sanity
+# http://localhost:3333
 ```
-Visit http://localhost:3333
 
-### 5. Add Initial Content in Sanity Studio
+### 4. Create your first page
 
-1. Go to http://localhost:3333
-2. Create your pages:
-   - Click "Page" in the sidebar
-   - Create pages with these slugs:
-     - `home` (title: "Home")
-     - `vision` (title: "Vision")
-     - `agenda` (title: "Agenda")
-     - `stays` (title: "Stays")
-     - `journey` (title: "Journey")
-     - `members` (title: "members")
-3. Add content blocks to each page:
-   - Click "+ Add item" under Content Blocks
-   - Choose Text Block, Image Block, or Mixed Block
-   - Fill in content and choose background colors
-4. Publish each page
-
-### 6. Using the CRM
-
-The built-in CRM allows you to manage contacts:
-
-1. In Sanity Studio, click "CRM Contact"
-2. Click "Create" to add a new contact
-3. Fill in:
-   - Name (required)
-   - Email (required)
-   - Phone (optional)
-   - Notes (optional)
-   - Status (new/contacted/active/archived)
-4. Save and publish
-
-You can search, filter, and manage all contacts from Sanity Studio.
+1. Open Sanity Studio at `http://localhost:3333`
+2. Click **Pages** → **Create**
+3. Set title `Home` and slug `home`
+4. Add content blocks, click **Publish**
+5. Refresh `http://localhost:3000`
 
 ## Deployment
 
-### Deploy Frontend to Vercel
+### Frontend (Vercel)
 
-1. **Push to GitHub**:
-   ```bash
-   git init
-   git add .
-   git commit -m "Initial commit"
-   git remote add origin your-repo-url
-   git push -u origin main
-   ```
+1. Push to GitHub
+2. Import the repo in Vercel
+3. Add the environment variables from `.env.local`
+4. Deploy
 
-2. **Deploy on Vercel**:
-   - Go to [vercel.com](https://vercel.com)
-   - Click "New Project"
-   - Import your GitHub repository
-   - Add environment variables (from `.env.local`)
-   - Click "Deploy"
+### Sanity Studio
 
-### Deploy Sanity Studio
-
-1. **Build and deploy**:
-   ```bash
-   cd sanity
-   npm run build
-   npm run deploy
-   ```
-
-2. **Configure CORS** (important!):
-   - Go to [sanity.io/manage](https://www.sanity.io/manage)
-   - Select your project
-   - Go to "API" → "CORS Origins"
-   - Add your Vercel domain (e.g., `https://your-site.vercel.app`)
-   - Add your Studio domain (e.g., `https://your-studio.sanity.studio`)
-
-## Content Management Guide for Owner
-
-### Accessing Sanity Studio
-
-After deployment, you can access Sanity Studio at:
-- Local: http://localhost:3333
-- Production: https://your-project.sanity.studio
-
-### Editing Content
-
-**To update page content:**
-1. Log into Sanity Studio
-2. Click "Page" in the left sidebar
-3. Select the page you want to edit
-4. Add, remove, or edit content blocks
-5. Click "Publish" to make changes live
-
-**Content Block Types:**
-- **Text Block**: Just text with background color
-- **Image Block**: Just an image
-- **Mixed Block**: Image and text side-by-side
-
-**Background Colors:**
-- White: Clean background
-- Teal: Dark teal (#4A5F5E)
-- Cream: Soft beige (#E8E5D5)
-
-### Managing CRM Contacts
-
-1. Click "CRM Contact" in the sidebar
-2. View all contacts in a list
-3. Click any contact to edit
-4. Use filters to find specific contacts
-5. Update status as relationships progress
-
-### Tips
-
-- Changes appear on the website within a few seconds
-- You can preview changes before publishing
-- All images are automatically optimized
-- Use descriptive alt text for images (important for accessibility)
-
-## Customization
-
-### Changing Colors
-
-Edit `tailwind.config.ts`:
-
-```typescript
-colors: {
-  'teal-dark': '#4A5F5E',
-  'cream': '#E8E5D5',
-}
+```bash
+npm run sanity-deploy
 ```
 
-### Changing Fonts
-
-Edit `app/layout.tsx` to import different Google Fonts.
-
-### Adding New Pages
-
-1. Create new route in `app/` directory
-2. Add page to navigation in `components/Navigation.tsx`
-3. Create corresponding page in Sanity Studio
+Then add your Vercel domain to the CORS allow-list in [sanity.io/manage](https://sanity.io/manage) → API → CORS Origins.
 
 ## Troubleshooting
 
-**"Cannot connect to Sanity"**
-- Check your `.env.local` file has the correct project ID
-- Make sure Sanity Studio is running
-- Verify CORS settings in Sanity dashboard
+**"Cannot connect to Sanity"** — check `.env.local` has the correct project ID and that Sanity Studio is running locally.
 
-**"Page not found"**
-- Create the page in Sanity Studio first
-- Make sure the slug matches exactly (e.g., "home" not "Home")
-- Publish the page
+**Page not found** — make sure the page is Published in Sanity Studio and the slug matches the URL exactly.
 
-**Images not loading**
-- Check `next.config.js` includes `cdn.sanity.io` in image domains
-- Verify images are published in Sanity Studio
-
-## Support
-
-For issues with:
-- **Next.js**: [Next.js Documentation](https://nextjs.org/docs)
-- **Sanity**: [Sanity Documentation](https://www.sanity.io/docs)
-- **Deployment**: [Vercel Documentation](https://vercel.com/docs)
-
-## License
-
-Private project - All rights reserved
+**Images not loading** — verify `cdn.sanity.io` is listed under `images.remotePatterns` in `next.config.js`.
 
 ---
 
-Built with ❤️ using Next.js and Sanity
+Private project — all rights reserved.
